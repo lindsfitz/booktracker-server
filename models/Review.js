@@ -1,0 +1,36 @@
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+
+class Review extends Model { }
+
+Review.init({
+    read: {
+        type: DataTypes.BOOLEAN,
+    },
+    date_started: {
+        type: DataTypes.DATE,   
+    },
+    date_finished: {
+        type: DataTypes.DATE, 
+    },
+    rating: {
+        type: DataTypes.INTEGER,
+    },
+    review: {
+        type: DataTypes.TEXT,
+    },
+    format: {
+        type: DataTypes.STRING,
+    },
+    series: {
+        type: DataTypes.STRING,
+    },
+}, {
+    timestamps: false,
+    sequelize,
+});
+
+// fk references user_id and book_id
+
+
+module.exports = Review;
