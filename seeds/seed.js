@@ -5,11 +5,13 @@ const seed = async () => {
     const userData = await User.bulkCreate([
         {
         email:"meep@meep.com",
-        password:"password"
+        password:"password",
+        username:"meep"
     },
     {
         email:"test@test.com",
-        password:"password"
+        password:"password",
+        username:"potato"
     }],
     {
         individualHooks:true
@@ -120,15 +122,15 @@ const seed = async () => {
         },
     ])
 
-    await bookData[1].addShelf(0)
-    await bookData[2].addShelf(0)
-    await bookData[2].addShelf(2)
-    await bookData[7].addShelf(5)
-    await bookData[4].addShelf(3)
-    await bookData[5].addShelf(3)
-    await bookData[8].addShelf(1)
-    await bookData[3].addShelf(4)
-    await bookData[5].addShelf(0)
+    await bookData[1].addShelf(1)
+    await bookData[2].addShelf(1)
+    await bookData[2].addShelf(3)
+    await bookData[7].addShelf(6)
+    await bookData[4].addShelf(4)
+    await bookData[5].addShelf(4)
+    await bookData[8].addShelf(2)
+    await bookData[3].addShelf(5)
+    await bookData[5].addShelf(1)
 
     const reviewData = await Review.bulkCreate([
         {
@@ -139,8 +141,8 @@ const seed = async () => {
             review:"One of my favorite books of all time srsly",
             format:"Kindle",
             series:"Crescent City #1",
-            BookId:4,
-            UserId:1 
+            UserId:1, 
+            BookId:5,
         },
         {
             read:true,
@@ -150,8 +152,8 @@ const seed = async () => {
             review:"I enjoyed it but objectively a bad book",
             format:"Kindle",
             series:"Persephone x Hades #1",
-            BookId:0,
-            UserId:1 
+            UserId:1,
+            BookId:1,
         },
         {
             read:true,
@@ -161,17 +163,17 @@ const seed = async () => {
             review:"Best book in this series in my opinion",
             format:"Kindle",
             series:"ACOTAR #2",
-            BookId:1,
-            UserId:2 
+            UserId:2, 
+            BookId:2,
         },
         {
             read:false,
-            BookId:8,
-            UserId:2
+            UserId:2,
+            BookId:9,
         },
     ])
 }
 
-sequelize.sync({force:false}).then(()=>{
+sequelize.sync({force:true}).then(()=>{
     seed();
 })

@@ -8,10 +8,10 @@ Review.init({
         type: DataTypes.BOOLEAN,
     },
     date_started: {
-        type: DataTypes.DATE,   
+        type: DataTypes.DATEONLY,   
     },
     date_finished: {
-        type: DataTypes.DATE, 
+        type: DataTypes.DATEONLY, 
     },
     rating: {
         type: DataTypes.INTEGER,

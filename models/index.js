@@ -18,7 +18,7 @@ User.hasMany(Shelf, {
     // THROUGH: bookshelf 
 
 Book.belongsToMany(Shelf,{through: 'bookshelf'})
-// Shelf.hasMany(Book, {through: 'bookshelf'})
+Shelf.belongsToMany(Book, {through: 'bookshelf'})
 
 // Review belongs to User
 // User has many Review

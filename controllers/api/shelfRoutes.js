@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Shelf } = require('../../models')
+const { Shelf, Book } = require('../../models')
 
 
 // get all shelves by one user based on user id 
@@ -21,7 +21,12 @@ router.get('/all/:id', (req,res) => {
 // get one shelf based on shelf id
 
 router.get('/one/:id', (req,res) => {
-    Shelf.findByPk(req.params.id)
+    Shelf.findByPk(req.params.id
+        , {
+        include: [{
+            model:Book
+        }]
+    })
     .then(shelf => res.json(shelf))
     .catch(err => {
         console.log(err)
