@@ -8,10 +8,15 @@ Shelf.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
+    description: {
+        type: DataTypes.TEXT
+    }
 }, {
     timestamps: false,
     sequelize,
 });
+
+// fk references user_id 
 
 
 module.exports = Shelf;
