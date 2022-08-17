@@ -14,11 +14,14 @@ router.get('/', (req, res) => {
     })
 })
 
-// router.get('/one/:id', (req, res) => {
-//     Book.findByPk(req.params.id, {
-//         include:[]
-//     })
-// })
+router.get('/one/:id', (req, res) => {
+    Book.findByPk(req.params.id)
+    .then(book => {res.json(book)})
+    .catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
 
 router.post('/new', async (req, res) => {
     const bookCheck = await Book.findOne({
@@ -36,23 +39,7 @@ router.post('/new', async (req, res) => {
     const newBook = await Book.create({...req.body})
 
     res.status(200).json(newBook)
-    
-    
-    // Book.findAll({
-    //     where: {
-    //         title:req.body.title,
-    //         author:req.body.author
-    //     }
-    // }).then(book => {
-    //     if(book){
-    //         return res.json({message:'this book exists!'})
-    //     } else {
-    //         Book.create({...req.body}).then(book => res.json(book))
-    //     }
-    // }).catch(err => {
-    //     console.log(err)
-    //     res.json(err)
-    // })
+
 })
 
 
