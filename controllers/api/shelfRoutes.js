@@ -9,7 +9,10 @@ router.get('/all/:id', (req,res) => {
     Shelf.findAll({
         where: {
             userId: req.params.id
-        }
+        },
+        include: [{
+            model:Book
+        }]
     })
     .then(shelves => res.json(shelves))
     .catch(err => {
