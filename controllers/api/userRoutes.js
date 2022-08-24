@@ -60,12 +60,50 @@ router.post("/login", (req, res) => {
     })
 })
 
-router.get("/verify",tokenAuth,(req,res)=> {
-    User.findByPk(req.user.id).then(foundUser=>{
-        res.json(foundUser)
-    }).catch(err=>{
+// put route to update a user
+router.put('/update', (req, res) => {
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    }).then(foundUser => {
+        if (!foundUser) {
+            res.status(401).json({ message: 'No user data to update. Sign up for an account first.' })
+        } else {
+            if (bcrypt.compareSync(req.body.password, foundUser.password)) {
+                foundUser.update(req.body.update).then(data => {
+                    res.json('successfully updated user data')
+                }).catch(err => {
+                    console.log(err)
+                    res.json(err)
+                })
+            } else {
+                res.status(400).json({ message: 'Please enter your current password to update account info' })
+            }
+        }
+    })
+
+})
+
+router.delete('/delete/:id',(req,res)=>{
+    User.destroy({
+        where:{
+            id:req.params.id
+        }
+    }).then(data => {
+        res.json('user successfully deleted')
+    }).catch(err => {
         console.log(err)
-        res.json({err:err,message:"InvalidToken"})
+        res.json(err)
+    })
+})
+
+router.get("/verify", tokenAuth, (req, res) => {
+    User.findByPk(req.user.id).then(foundUser => {
+        res.json(foundUser)
+    }).catch(err => {
+        console.log(err)
+        res.json({ err: err, message: "InvalidToken" })
     })
 })
 

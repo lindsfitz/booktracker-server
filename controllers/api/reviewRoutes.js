@@ -69,8 +69,31 @@ router.post('/new', (req,res) => {
 })
 
 // put route to update review
+router.put('/update/:id', (req,res)=>{
+    Review.update(req.body, {
+        where:{
+            id:req.params.id
+        }.then(data=>{
+            res.json('review updated')
+        }).catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+    })
+})
 
 // delete route to remove review 
-
+router.delete('/delete/:id', (req,res) => {
+    Review.destroy({
+        where:{
+            id:req.params.id
+        }
+    }).then(data => {
+        res.json(data)
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
 
 module.exports = router

@@ -50,10 +50,34 @@ router.post('/new', (req,res) => {
 
 // put route for updating name/description on shelf
 
-// router.put('/update/:id')
+
+
+router.put('/update/:id', (req,res) => {
+    Shelf.update(req.body, {
+        where:{
+            id:req.params.id
+        }
+    }).then(data => {
+        res.json('shelf updated')
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
 
 // delete route to remove shelves 
 
-// router.delete('/delete')
+router.delete('/delete/:id', (req,res) => {
+    Shelf.destroy({
+        where:{
+            id:req.params.id
+        }
+    }).then(data => {
+        res.json(data)
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
 
 module.exports = router
