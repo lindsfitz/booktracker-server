@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt')
 const { User } = require('../../models')
 const jwt = require("jsonwebtoken");
-// const tokenAuth = require("../../middleware/tokenAuth")
+const tokenAuth = require("../../middleware/tokenAuth")
 
 
 router.get("/", (req, res) => {
@@ -57,6 +57,15 @@ router.post("/login", (req, res) => {
     }).catch(err => {
         console.log(err)
         res.json(err)
+    })
+})
+
+router.get("/verify",tokenAuth,(req,res)=> {
+    User.findByPk(req.user.id).then(foundUser=>{
+        res.json(foundUser)
+    }).catch(err=>{
+        console.log(err)
+        res.json({err:err,message:"InvalidToken"})
     })
 })
 
