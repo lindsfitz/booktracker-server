@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Book } = require('../../models')
+const { Book, Review } = require('../../models')
 
 
 // get all route for testing 
@@ -33,13 +33,23 @@ router.post('/new', async (req, res) => {
     console.log(bookCheck)
 
     if(bookCheck){
-        return res.json({message:'this book exists!'})
+        return res.json(bookCheck)
     }
 
     const newBook = await Book.create({...req.body})
 
     res.status(200).json(newBook)
 
+})
+
+router.post('/addto/:shelfid', (req,res)=>{
+    Book.findByPk(req.body.id).then(async book => {
+        await book.addShelf(req.params.shelfid)
+        return res.json({message:'added book to shelf!'})
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
 })
 
 
