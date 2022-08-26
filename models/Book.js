@@ -12,15 +12,20 @@ Book.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
-    // author_gender: {
-    //     type: DataTypes.STRING,
-    //     allowNull: false,
-    // },
+    author_key: {
+        type: DataTypes.STRING,
+    },
+    description: {
+        type: DataTypes.TEXT,
+    },
     cover_img: {
         type: DataTypes.STRING,
         allowNull: false,
     },
     pages: {
+        type: DataTypes.INTEGER,
+    },
+    published: {
         type: DataTypes.INTEGER,
     },
     edition_key: {

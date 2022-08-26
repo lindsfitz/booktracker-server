@@ -10,6 +10,10 @@ Shelf.init({
     },
     description: {
         type: DataTypes.TEXT
+    },
+    last_update: {
+        type: DataTypes.DATE,
+        allowNull:false,
     }
 }, {
     timestamps: false,

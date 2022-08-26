@@ -2,6 +2,7 @@ const User = require('./User')
 const Shelf = require('./Shelf')
 const Book = require('./Book')
 const Review = require('./Review')
+const Request = require('./Request')
 
 
 // Shelf belongs to User
@@ -36,9 +37,31 @@ User.hasMany(Review, {
 Review.belongsTo(Book)
 Book.hasMany(Review)
 
+
+// Friends lists functionality being added potentially 
+
+
+User.belongsToMany(User, { as: 'Sender', foreignKey: 'SenderUserId', through: 'Friends' });
+User.belongsToMany(User, { as: 'Receiver', foreignKey: 'ReceiverUserId', through: 'Friends' });
+// Request.belongsTo(User, {
+//     foreignKey:'senderId'
+// })
+
+Request.belongsTo(User,{
+    foreignKey:'SenderId'
+})
+// User.hasMany(Request)
+
+Request.belongsTo(User,{
+    foreignKey:'ReceiverId'
+})
+// User.hasMany(Request)
+
+
 module.exports = {
     User,
     Book,
     Shelf,
-    Review
+    Review,
+    Request
 }
