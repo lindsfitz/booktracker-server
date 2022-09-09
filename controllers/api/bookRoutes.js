@@ -89,7 +89,13 @@ router.get('/user/:id', async (req, res) => {
         for (const shelf of shelves) {
             const books = await shelf.getBooks({ joinTableAttributes: [], raw: true })
             for (const book of books) {
-                userBooks.push(book)
+                const index = books.findIndex(object => {
+                    return object.title === book.title
+                })
+                console.log(index)
+                if (!index){
+                    userBooks.push(book)
+                }
             }
             
         }
