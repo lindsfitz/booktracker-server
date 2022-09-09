@@ -50,8 +50,6 @@ router.post('/new', (req,res) => {
 
 // put route for updating name/description on shelf
 
-
-
 router.put('/update/:id', (req,res) => {
     Shelf.update(req.body, {
         where:{
