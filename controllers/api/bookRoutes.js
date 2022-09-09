@@ -63,7 +63,7 @@ router.post('/addto/:shelfid', (req, res) => {
 
 // DELETE route to remove a book from a shelf
 
-router.delete('/delete/:shelfid/:bookid', (req,res)=>{
+router.delete('/remove/:shelfid/:bookid', (req,res)=>{
     Book.findByPk(req.params.bookid).then(async book => {
         await book.removeShelf(req.params.shelfid)
         return res.json({ message: 'removed book from shelf!' }) 

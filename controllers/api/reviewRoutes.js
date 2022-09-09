@@ -42,7 +42,7 @@ router.get('/usr/:id', (req,res) => {
     })
 })
 
-
+// all users reviews on one specific book 
 router.get('/:uid/:bid', (req,res) => {
     Review.findAll({
         where:{
