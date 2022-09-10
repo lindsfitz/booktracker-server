@@ -43,10 +43,22 @@ const seed = async () => {
 
     const shelfData = await Shelf.bulkCreate([
         {
+            name: "Read",
+            description: "All books currently marked as 'Read'",
+            last_update:"2022-08-26 11:07:12",
+            UserId:1,
+        },
+        {
             name: "Faves",
             description: "All time favorite books",
             last_update:"2022-08-26 11:07:12",
             UserId:1,
+        },
+        {
+            name: "Read",
+            description: "All books currently marked as 'Read'",
+            last_update:"2022-08-26 11:07:12",
+            UserId:2,
         },
         {
             name: "TBR",
@@ -181,21 +193,23 @@ const seed = async () => {
         },
     ])
 
-    await bookData[1].addShelf(1)
-    await bookData[2].addShelf(1)
-    await bookData[2].addShelf(3)
-    await bookData[7].addShelf(6)
-    await bookData[4].addShelf(4)
-    await bookData[5].addShelf(4)
-    await bookData[8].addShelf(2)
-    await bookData[3].addShelf(5)
-    await bookData[5].addShelf(1)
+    await bookData[1].addShelf(2)
+    await bookData[2].addShelf(2)
+    await bookData[2].addShelf(4)
+    await bookData[7].addShelf(7)
+    await bookData[4].addShelf(5)
+    await bookData[5].addShelf(5)
+    await bookData[8].addShelf(3)
+    await bookData[3].addShelf(6)
+    await bookData[5].addShelf(2)
 
     const reviewData = await Review.bulkCreate([
         {
             read:true,
             date_started:"2022-03-22",
             date_finished:"2022-03-23",
+            year_finished:2022,
+            month_finished: 3,
             rating:5,
             review:"One of my favorite books of all time srsly",
             format:"Kindle",
@@ -207,6 +221,8 @@ const seed = async () => {
             read:true,
             date_started:"2022-04-22",
             date_finished:"2022-04-24",
+            year_finished:2022,
+            month_finished: 4,
             rating:3,
             review:"I enjoyed it but objectively a bad book",
             format:"Kindle",
@@ -218,6 +234,8 @@ const seed = async () => {
             read:true,
             date_started:"2022-05-22",
             date_finished:"2022-05-25",
+            year_finished:2022,
+            month_finished: 5,
             rating:4,
             review:"Best book in this series in my opinion",
             format:"Kindle",
@@ -227,7 +245,7 @@ const seed = async () => {
         },
         {
             read:false,
-            UserId:2,
+            UserId:1,
             BookId:9,
         },
     ])

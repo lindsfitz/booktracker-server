@@ -10,6 +10,7 @@ router.get('/all/:id', (req,res) => {
         where: {
             userId: req.params.id
         },
+        order:[['last_update','DESC']],
         include: [{
             model:Book
         }]
@@ -51,7 +52,10 @@ router.post('/new', (req,res) => {
 // put route for updating name/description on shelf
 
 router.put('/update/:id', (req,res) => {
-    Shelf.update(req.body, {
+    Shelf.update({
+        ...req.body,
+        last_update: new Date(),
+    }, {
         where:{
             id:req.params.id
         }

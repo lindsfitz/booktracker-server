@@ -50,10 +50,19 @@ router.post('/new', async (req, res) => {
 
 
 // add a book to an existing shelf
+// also updates the 'last updated' column in shelf -- shelves sorted on main page by the most recently updated
 
 router.post('/addto/:shelfid', (req, res) => {
     Book.findByPk(req.body.id).then(async book => {
         await book.addShelf(req.params.shelfid)
+        await Shelf.update({
+            last_update: new Date()
+        },
+            {
+                where: {
+                    id: req.params.shelfid,
+                }
+            })
         return res.json({ message: 'added book to shelf!' })
     }).catch(err => {
         console.log(err)
@@ -63,10 +72,10 @@ router.post('/addto/:shelfid', (req, res) => {
 
 // DELETE route to remove a book from a shelf
 
-router.delete('/remove/:shelfid/:bookid', (req,res)=>{
+router.delete('/remove/:shelfid/:bookid', (req, res) => {
     Book.findByPk(req.params.bookid).then(async book => {
         await book.removeShelf(req.params.shelfid)
-        return res.json({ message: 'removed book from shelf!' }) 
+        return res.json({ message: 'removed book from shelf!' })
     }).catch(err => {
         console.log(err)
         res.json(err)
@@ -93,11 +102,11 @@ router.get('/user/:id', async (req, res) => {
                     return object.title === book.title
                 })
                 console.log(index)
-                if (!index){
+                if (!index) {
                     userBooks.push(book)
                 }
             }
-            
+
         }
 
         return res.status(200).json(userBooks)
@@ -119,7 +128,7 @@ router.get('/read/:id', (req, res) => {
             '$Reviews.UserId$': req.params.id,
             '$Reviews.read$': true
         },
-        order:[[Review, 'date_finished', 'DESC']],
+        order: [[Review, 'date_finished', 'DESC']],
         include: [{
             model: Review,
             attributes: []

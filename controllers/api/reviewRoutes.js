@@ -14,9 +14,9 @@ router.get('/', (req, res) => {
 
 // get route for all reviews based on book id
 
-router.get('/bk/:id', (req,res) => {
+router.get('/bk/:id', (req, res) => {
     Review.findAll({
-        where:{
+        where: {
             BookId: req.params.id
         }
     }).then(reviews => {
@@ -29,9 +29,9 @@ router.get('/bk/:id', (req,res) => {
 
 // get route for all reviews based on user id 
 
-router.get('/usr/:id', (req,res) => {
+router.get('/usr/:id', (req, res) => {
     Review.findAll({
-        where:{
+        where: {
             UserId: req.params.id
         }
     }).then(reviews => {
@@ -43,9 +43,9 @@ router.get('/usr/:id', (req,res) => {
 })
 
 // all users reviews on one specific book 
-router.get('/:uid/:bid', (req,res) => {
+router.get('/:uid/:bid', (req, res) => {
     Review.findAll({
-        where:{
+        where: {
             UserId: req.params.uid,
             BookId: req.params.bid
         }
@@ -59,34 +59,35 @@ router.get('/:uid/:bid', (req,res) => {
 
 // post route for new review (must include book id and user id)
 
-router.post('/new', (req,res) => {
-    Review.create({...req.body})
-    .then(review => {res.json(review)})
-    .catch(err => {
-        console.log(err)
-        res.json(err)
-    })
-})
-
-// put route to update review
-router.put('/update/:id', (req,res)=>{
-    Review.update(req.body, {
-        where:{
-            id:req.params.id
-        }.then(data=>{
-            res.json('review updated')
-        }).catch(err => {
+router.post('/new', (req, res) => {
+    Review.create({ ...req.body })
+        .then(review => { res.json(review) })
+        .catch(err => {
             console.log(err)
             res.json(err)
         })
+})
+
+// put route to update review
+router.put('/update/:id', (req, res) => {
+    Review.update(req.body, {
+        where: {
+            id: req.params.id
+        }
+    }).then(data => {
+        res.json('review updated')
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
     })
+
 })
 
 // delete route to remove review 
-router.delete('/delete/:id', (req,res) => {
+router.delete('/delete/:id', (req, res) => {
     Review.destroy({
-        where:{
-            id:req.params.id
+        where: {
+            id: req.params.id
         }
     }).then(data => {
         res.json(data)

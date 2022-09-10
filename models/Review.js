@@ -13,6 +13,12 @@ Review.init({
     date_finished: {
         type: DataTypes.DATEONLY, 
     },
+    year_finished: {
+        type: DataTypes.INTEGER
+    },
+    month_finished:{
+        type: DataTypes.INTEGER,
+    },
     rating: {
         type: DataTypes.INTEGER,
     },
