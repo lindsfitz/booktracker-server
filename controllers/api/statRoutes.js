@@ -116,7 +116,7 @@ router.get('/rating/:id', (req, res) => {
 
 // pulls all stats at once from db before sending response -- needs error handling when I have wifi 
 //replace current year/month with actual values somehow (Date? not sure how to format)
-router.get('/allstats/:id', async (req,res)=>{
+router.get('/allstats/:id/:year/:month', async (req,res)=>{
 
     let currentYear = 2022;
     let currentMonth = 7;
@@ -141,10 +141,10 @@ router.get('/allstats/:id', async (req,res)=>{
         },
         group: ['UserId'],
         raw: true,
-        attributes: ['UserId'],
+        attributes: [[sequelize.fn('count', sequelize.col('Books.id')), 'bookCount'],[sequelize.fn("sum", sequelize.col("Books.pages")), 'totalPages']],
         include: [{
             model: Book,
-            attributes: [[sequelize.fn('count', sequelize.col('Books.id')), 'bookCount'],[sequelize.fn("sum", sequelize.col("Books.pages")), 'totalPages']],
+            attributes: [],
             through: { attributes: [] }
         }],
     })
@@ -153,7 +153,7 @@ router.get('/allstats/:id', async (req,res)=>{
         where: {
             '$Reviews.UserId$': req.params.id,
             '$Reviews.read$': true,
-            '$Reviews.year_finished$':currentYear
+            '$Reviews.year_finished$':req.params.year
         },
         attributes: [[sequelize.fn('count', sequelize.col('Book.id')), 'bookCount'], [sequelize.fn("sum", sequelize.col("pages")), 'totalPages'],[sequelize.fn('avg', sequelize.col('Reviews.rating')), 'avgRating']],
         include: [{
@@ -168,7 +168,7 @@ router.get('/allstats/:id', async (req,res)=>{
         where: {
             '$Reviews.UserId$': req.params.id,
             '$Reviews.read$': true,
-            '$Reviews.month_finished$': currentMonth
+            '$Reviews.month_finished$': req.params.month
         },
         attributes: [[sequelize.fn('count', sequelize.col('Book.id')), 'bookCount'], [sequelize.fn("sum", sequelize.col("pages")), 'totalPages'], [sequelize.fn('avg', sequelize.col('Reviews.rating')), 'avgRating']],
         include: [{
