@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Review, Shelf } = require('../../models')
+const { Book, Review, Shelf, User } = require('../../models')
 const sequelize = require('../../config/connection')
 
 
@@ -117,6 +117,47 @@ router.get('/user/:id', async (req, res) => {
     })
 
 
+})
+
+
+router.get('/allbooks/:id', async (req, res) => {
+
+    const allUserBooks = []
+
+    const user = await User.findByPk(req.params.id, {
+        include: [ 
+        {
+            model: Shelf,
+            // attributes: [],
+            include: [{
+                model: Book,
+                through: { attributes: [] }
+            }]
+        }],
+    })
+
+    const reading = await user.getBooks({ joinTableAttributes: [], raw: true })
+
+    for (const book of reading){
+        allUserBooks.push(book)
+    }
+
+    for (const shelf of user.Shelves) {
+        const books = await shelf.getBooks({ joinTableAttributes: [], raw: true })
+        console.log(books)
+        for (const book of books) {
+            const index = books.findIndex(object => {
+                return object.title === book.title
+            })
+            console.log(index)
+            if (!index) {
+                allUserBooks.push(book)
+            }
+        }
+
+    }
+
+    return res.status(200).json(allUserBooks)
 })
 
 

@@ -43,22 +43,10 @@ const seed = async () => {
 
     const shelfData = await Shelf.bulkCreate([
         {
-            name: "Read",
-            description: "All books currently marked as 'Read'",
-            last_update:"2022-08-26 11:07:12",
-            UserId:1,
-        },
-        {
             name: "Faves",
             description: "All time favorite books",
             last_update:"2022-08-26 11:07:12",
             UserId:1,
-        },
-        {
-            name: "Read",
-            description: "All books currently marked as 'Read'",
-            last_update:"2022-08-26 11:07:12",
-            UserId:2,
         },
         {
             name: "TBR",
@@ -147,7 +135,7 @@ const seed = async () => {
             title:"House of Sky and Breath",
             author:"Sarah J. Maas",
             description:"Bryce Quinlan and Hunt Athalar are trying to get back to normal―they may have saved Crescent City, but with so much upheaval in their lives lately, they mostly want a chance to relax. Slow down. Figure out what the future holds. The Asteri have kept their word so far, leaving Bryce and Hunt alone. But with the rebels chipping away at the Asteri’s power, the threat the rulers pose is growing. As Bryce, Hunt, and their friends get pulled into the rebels’ plans, the choice becomes clear: stay silent while others are oppressed, or fight for what’s right. And they’ve never been very good at staying silent. In this sexy, action-packed sequel to the #1 bestseller House of Earth and Blood, Sarah J. Maas weaves a captivating story of a world about to explode―and the people who will do anything to save it.",
-            cover_img:"https://covers.openlibrary.org/b/olid/OL28946291M-M.jpg",
+            cover_img:"/assets/no-cover.jpeg",
             pages:807,
             published:2022,
         },
@@ -193,15 +181,15 @@ const seed = async () => {
         },
     ])
 
-    await bookData[1].addShelf(2)
-    await bookData[2].addShelf(2)
-    await bookData[2].addShelf(4)
-    await bookData[7].addShelf(7)
-    await bookData[4].addShelf(5)
-    await bookData[5].addShelf(5)
-    await bookData[8].addShelf(3)
-    await bookData[3].addShelf(6)
-    await bookData[5].addShelf(2)
+    await bookData[1].addShelf(1)
+    await bookData[2].addShelf(1)
+    await bookData[2].addShelf(3)
+    await bookData[7].addShelf(6)
+    await bookData[4].addShelf(4)
+    await bookData[5].addShelf(4)
+    await bookData[8].addShelf(2)
+    await bookData[3].addShelf(5)
+    await bookData[5].addShelf(1)
 
     const reviewData = await Review.bulkCreate([
         {
@@ -251,6 +239,8 @@ const seed = async () => {
     ])
 
     await userData[1].addSender(1)
+
+    await userData[1].addBook(10)
 }
 
 sequelize.sync({force:true}).then(()=>{

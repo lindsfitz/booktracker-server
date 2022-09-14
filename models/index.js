@@ -38,9 +38,12 @@ Review.belongsTo(Book)
 Book.hasMany(Review)
 
 
+User.belongsToMany(Book, {through:'CurrentlyReading'})
+Book.belongsToMany(User, {through:'CurrentlyReading'})
+
+
+
 // Friends lists functionality being added potentially 
-
-
 User.belongsToMany(User, { as: 'Sender', foreignKey: 'SenderUserId', through: 'Friends' });
 User.belongsToMany(User, { as: 'Receiver', foreignKey: 'ReceiverUserId', through: 'Friends' });
 // Request.belongsTo(User, {
