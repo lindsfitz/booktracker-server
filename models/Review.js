@@ -6,6 +6,7 @@ class Review extends Model { }
 Review.init({
     read: {
         type: DataTypes.BOOLEAN,
+        allowNull: false,
     },
     date_started: {
         type: DataTypes.DATEONLY,   
@@ -31,6 +32,10 @@ Review.init({
     series: {
         type: DataTypes.STRING,
     },
+    last_update: {
+        type: DataTypes.DATE,
+        allowNull:false,
+    }
 }, {
     timestamps: false,
     sequelize,

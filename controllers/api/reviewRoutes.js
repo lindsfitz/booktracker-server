@@ -48,7 +48,8 @@ router.get('/:uid/:bid', (req, res) => {
         where: {
             UserId: req.params.uid,
             BookId: req.params.bid
-        }
+        },
+        order:[['last_update', 'DESC']]
     }).then(reviews => {
         res.json(reviews)
     }).catch(err => {

@@ -43,8 +43,8 @@ const seed = async () => {
 
     const shelfData = await Shelf.bulkCreate([
         {
-            name: "Faves",
-            description: "All time favorite books",
+            name: "All-Time Favorites",
+            description: "My 5-star reads forever. Would read these 100 times and recommend them to everyone I know. I loooove these books",
             last_update:"2022-08-26 11:07:12",
             UserId:1,
         },
@@ -56,19 +56,19 @@ const seed = async () => {
         },
         {
             name: "To Be Read",
-            description: "Eeeep can't wait to read these!",
+            description: "Without a doubt going to be my largest shelf lol",
             last_update:"2022-01-26 11:07:12",
             UserId:1,
         },
         {
-            name: "Upcoming Releases",
-            description: "Counting Down the Days",
+            name: "Adult Fantasy",
+            description: "Fantasy books with Adult themes that aren't just smut lmao. These books fit more into the classic definition of Fantasy, imo.",
             last_update:"2022-07-26 11:07:12",
             UserId:1,
         },
         {
-            name: "DNF",
-            description: "Boo these books",
+            name: "Fantasy Romance",
+            description: "Most of these are objectively not great books but I still devoured them.",
             last_update:"2022-04-26 11:07:12",
             UserId:1,
         },
@@ -89,7 +89,8 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL28946291M-M.jpg",
             pages:354,
             published:2019,
-            edition_key:"/works/OL21370801W",
+            ol_key:"/works/OL21370801W",
+            isbn:'9781728258454'
         },
         {
             title:"A Court of Wings and Ruin",
@@ -99,7 +100,8 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL26832221M-M.jpg",
             pages:720,
             published:2017,
-            edition_key:"/works/OL17860745W",
+            ol_key:"/works/OL17860745W",
+            isbn:'9781681197753'
         },
         {
             title:"A Court of Thorns and Roses",
@@ -109,7 +111,8 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL27099075M-M.jpg",
             pages:432,
             published:2015,
-            edition_key:"/works/OL17352669W",
+            ol_key:"/works/OL17352669W",
+            isbn:'9780606385480'
         },
         {
             title:"A Court of Mist and Fury",
@@ -119,17 +122,19 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL26992991M-M.jpg",
             pages:640,
             published:2016,
-            edition_key:"/works/OL17860744W",
+            ol_key:"/works/OL17860744W",
+            isbn:'9781526634252'
         },
         {
             title:"House of Earth and Blood",
             author:"Sarah J. Maas",
             author_key:"OL7115219A",
-            description:"",
+            description:"Half-Fae, half-human Bryce Quinlan loves her life. By day, she works for an antiquities dealer, selling barely legal magical artifacts, and by night, she parties with her friends, savouring every pleasure Lunathion - otherwise known as Crescent City - has to offer. But it all comes crumbling down when a ruthless murder shakes the very foundations of the city - and Bryce's world. Two years later, her job has become a dead end, and she now seeks only blissful oblivion in the city's most notorious nightclubs. But when the murderer attacks again, Bryce finds herself dragged into the investigation and paired with an infamous Fallen angel whose own brutal past haunts his every step. Hunt Athalar, personal assassin for the Archangels, wants nothing to do with Bryce Quinlan, despite being ordered to protect her. She stands for everything he once rebelled against and seems more interested in partying than solving the murder, no matter how close to home it might hit. But Hunt soon realizes there's far more to Bryce than meets the eye - and that he's going to have to find a way to work with her if they want to solve this case. As Bryce and Hunt race to untangle the mystery, they have no way of knowing the threads they tug ripple through the underbelly of the city, across warring continents, and down to the darkest levels of Hel, where things that have been sleeping for millennia are beginning to stir...",
             cover_img:"https://covers.openlibrary.org/b/olid/OL27924119M-M.jpg",
             pages:816,
             published:2021,
-            edition_key:"/works/OL26517160W",
+            ol_key:"/works/OL26517160W",
+            isbn:'9781408884409'
         },
         {
             title:"House of Sky and Breath",
@@ -138,6 +143,7 @@ const seed = async () => {
             cover_img:"/assets/no-cover.jpeg",
             pages:807,
             published:2022,
+            isbn:'1635574072'
         },
         {
             title:"Empire of Storms",
@@ -147,17 +153,19 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL26319926M-M.jpg",
             pages:712,
             published:2016,
-            edition_key:"/works/OL17625829W",
+            ol_key:"/works/OL17625829W",
+            isbn:'9781619636071'
         },
         {
             title:"The Ruin of Kings",
             author:"Jenn Lyons",
             author_key:"OL9177386A",
             description:"Kihrin is a bastard orphan who grew up on storybook tales of long-lost princes and grand quests. When he is claimed against his will as the long-lost son of a treasonous prince, Kihrin finds that being a long-lost prince isn't what the storybooks promised.\r\n\r\nFar from living the dream, Kihrin finds himself practically a prisoner, at the mercy of his new family's power plays and ambitions. He also discovers that the storybooks have lied about a lot of other things too: dragons, demons, gods, prophecies, true love, and how the hero always wins.\r\n\r\nThen again, maybe he's not the hero, for Kihrin is not destined to save the empire.",
-            cover_img:"https://covers.openlibrary.org/b/olid/OL27760114M-M.jpg",
+            cover_img:"https://covers.openlibrary.org/b/isbn/9781509879502-M.jpg",
             pages:576,
             published:2019,
-            edition_key:"/works/OL20521134W",
+            ol_key:"/works/OL20521134W",
+            isbn:'9781509879502'
         },
         {
             title:"The Memory of Souls",
@@ -167,7 +175,8 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL28178905M-M.jpg",
             pages:656,
             published:2020,
-            edition_key:"/works/OL20814818W",
+            ol_key:"/works/OL20814818W",
+            isbn:'9781250175564'
         },
         {
             title:"The Discord of Gods",
@@ -177,27 +186,34 @@ const seed = async () => {
             cover_img:"https://covers.openlibrary.org/b/olid/OL34161957M-M.jpg",
             pages:512,
             published:2022,
-            edition_key:"/works/OL25472967W",
+            ol_key:"/works/OL25472967W",
+            isbn:'1250175682'
         },
     ])
 
-    await bookData[1].addShelf(1)
-    await bookData[2].addShelf(1)
-    await bookData[2].addShelf(3)
-    await bookData[7].addShelf(6)
-    await bookData[4].addShelf(4)
-    await bookData[5].addShelf(4)
-    await bookData[8].addShelf(2)
-    await bookData[3].addShelf(5)
+    await bookData[4].addShelf(1)
     await bookData[5].addShelf(1)
+    await bookData[7].addShelf(1)
+    await bookData[6].addShelf(3)
+    await bookData[7].addShelf(4)
+    await bookData[8].addShelf(4)
+    await bookData[9].addShelf(4)
+    await bookData[0].addShelf(5)
+    await bookData[1].addShelf(5)
+    await bookData[2].addShelf(5)
+    await bookData[3].addShelf(5)
+    
+    await bookData[1].addShelf(2)
+    await bookData[8].addShelf(2)
 
     const reviewData = await Review.bulkCreate([
         {
             read:true,
-            date_started:"2022-03-22",
-            date_finished:"2022-03-23",
+            date_started:"2022-09-08",
+            date_finished:"2022-09-10",
             year_finished:2022,
-            month_finished: 3,
+            month_finished: 8,
+            last_update:'2022-09-11',
             rating:5,
             review:"One of my favorite books of all time srsly",
             format:"Kindle",
@@ -207,10 +223,11 @@ const seed = async () => {
         },
         {
             read:true,
-            date_started:"2022-04-22",
-            date_finished:"2022-04-24",
+            date_started:"2022-07-22",
+            date_finished:"2022-07-24",
             year_finished:2022,
-            month_finished: 4,
+            month_finished: 6,
+            last_update:'2022-07-26',
             rating:3,
             review:"I enjoyed it but objectively a bad book",
             format:"Kindle",
@@ -220,19 +237,21 @@ const seed = async () => {
         },
         {
             read:true,
-            date_started:"2022-05-22",
-            date_finished:"2022-05-25",
+            date_started:"2022-08-22",
+            date_finished:"2022-08-25",
             year_finished:2022,
-            month_finished: 5,
+            month_finished: 7,
+            last_update:'2022-08-25',
             rating:4,
             review:"Best book in this series in my opinion",
             format:"Kindle",
             series:"ACOTAR #2",
-            UserId:2, 
+            UserId:1, 
             BookId:2,
         },
         {
             read:false,
+            last_update: new Date(),
             UserId:1,
             BookId:9,
         },
@@ -240,7 +259,7 @@ const seed = async () => {
 
     await userData[1].addSender(1)
 
-    await userData[1].addBook(10)
+    await userData[0].addBook(10)
 }
 
 sequelize.sync({force:true}).then(()=>{

@@ -67,13 +67,13 @@ router.get('/:id/:year/:month', async (req,res)=>{
         group: ['Reviews.UserId'],
         raw: true
     })
-
-    const stats = [
-        ...allRead,
-        ...allShelved,
-        ...yearly,
-        ...monthly
-    ]
+ 
+    const stats = {
+        all: allRead[0],
+        shelved: allShelved[0],
+        year: yearly[0],
+        month: monthly[0]
+    }
 
     return res.status(200).json(stats)
 })
