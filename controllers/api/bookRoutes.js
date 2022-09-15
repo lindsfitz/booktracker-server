@@ -26,6 +26,34 @@ router.get('/one/:id', (req, res) => {
         })
 })
 
+router.get('/one/:bookid/:userid', (req, res) => {
+    Book.findOne({
+        where:{
+            id:req.params.bookid
+        }, 
+        include:[{
+            model:Shelf,
+            where:{
+                UserId:req.params.userid
+            },
+            required:false
+        },
+        {
+            model:User,
+            where:{
+                id:req.params.userid
+            },
+            attributes:['first_name'],
+            required:false
+        }
+    ]
+    })
+        .then(book => { res.json(book) })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+})
 
 
 // post route for new books --- check to see if exists before actually adding a new one 

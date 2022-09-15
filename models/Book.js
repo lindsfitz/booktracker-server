@@ -28,9 +28,12 @@ Book.init({
     published: {
         type: DataTypes.INTEGER,
     },
-    edition_key: {
+    ol_key: {
         type: DataTypes.STRING,
     },
+    isbn: {
+        type: DataTypes.STRING
+    }
 }, {
     timestamps: false,
     sequelize,
