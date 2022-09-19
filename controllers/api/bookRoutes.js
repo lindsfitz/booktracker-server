@@ -26,6 +26,7 @@ router.get('/one/:id', (req, res) => {
         })
 })
 
+// get one book for userbook page, include books associated shelves & if currently reading
 router.get('/one/:bookid/:userid', (req, res) => {
     Book.findOne({
         where:{
@@ -113,7 +114,6 @@ router.delete('/remove/:shelfid/:bookid', (req, res) => {
 
 
 // ALL BOOKS associated w a user, on any shelf
-
 router.get('/user/:id', async (req, res) => {
     Shelf.findAll({
         where: {
@@ -200,7 +200,7 @@ router.get('/read/:id', (req, res) => {
         order: [[Review, 'date_finished', 'DESC']],
         include: [{
             model: Review,
-            attributes: []
+            attributes: ['date_started','date_finished','rating']
         }]
     }).then(books => res.json(books))
         .catch(err => {
