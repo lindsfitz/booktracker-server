@@ -14,18 +14,18 @@ router.get('/', (req, res) => {
 
 // get route for all reviews based on book id
 
-router.get('/bk/:id', (req, res) => {
-    Review.findAll({
-        where: {
-            BookId: req.params.id
-        }
-    }).then(reviews => {
-        res.json(reviews)
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
-})
+// router.get('/bk/:id', (req, res) => {
+//     Review.findAll({
+//         where: {
+//             BookId: req.params.id
+//         }
+//     }).then(reviews => {
+//         res.json(reviews)
+//     }).catch(err => {
+//         console.log(err)
+//         res.json(err)
+//     })
+// })
 
 // get route for all reviews based on user id 
 

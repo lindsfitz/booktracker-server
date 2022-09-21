@@ -46,7 +46,15 @@ router.get('/one/:bookid/:userid', (req, res) => {
             },
             attributes:['first_name'],
             required:false
-        }
+        },
+        {
+            model:Review,
+            where:{
+                UserId:req.params.userid
+            },
+            required:false
+        },
+        
     ]
     })
         .then(book => { res.json(book) })
