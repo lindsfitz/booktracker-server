@@ -7,9 +7,6 @@ const sequelize = require('../../config/connection')
 //replace current year/month with actual values somehow (Date? not sure how to format)
 router.get('/all/:id/:year/:month', async (req, res) => {
 
-    let currentYear = 2022;
-    let currentMonth = 7;
-
     const allRead = await Book.findAll({
         where: {
             '$Reviews.UserId$': req.params.id,
@@ -57,7 +54,8 @@ router.get('/all/:id/:year/:month', async (req, res) => {
         where: {
             '$Reviews.UserId$': req.params.id,
             '$Reviews.read$': true,
-            '$Reviews.month_finished$': req.params.month
+            '$Reviews.month_finished$': req.params.month,
+            '$Reviews.year_finished$': req.params.year
         },
         attributes: [[sequelize.fn('count', sequelize.col('Book.id')), 'bookCount'], [sequelize.fn("sum", sequelize.col("pages")), 'totalPages'], [sequelize.fn('avg', sequelize.col('Reviews.rating')), 'avgRating']],
         include: [{
@@ -82,15 +80,18 @@ router.get('/all/:id/:year/:month', async (req, res) => {
 // monthly stats & associated books 
 router.get('/monthly/:month/:id', async (req, res) => {
     try {
+        const date = new Date();
+        const thisyear = date.getFullYear();
         const monthly = await Book.findAll({
             where: {
                 '$Reviews.month_finished$': req.params.month,
+                '$Reviews.year_finished$':thisyear,
                 '$Reviews.read$': true,
                 '$Reviews.UserId$': req.params.id,
             },
             include: [{
                 model: Review,
-                attributes: []
+                attributes: ['rating','date_started','date_finished']
             }]
         })
 
@@ -114,7 +115,7 @@ router.get('/yearly/:year/:id',(req,res) => {
         },
         include: [{
             model: Review,
-            attributes: []
+            attributes: ['rating','date_started','date_finished']
         }],
     }).then(books => res.json(books))
         .catch(err => {

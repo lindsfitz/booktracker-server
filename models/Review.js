@@ -8,6 +8,10 @@ Review.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
     },
+    public:{
+        type: DataTypes.BOOLEAN,
+        allowNull:false,
+    },
     date_started: {
         type: DataTypes.DATEONLY,   
     },

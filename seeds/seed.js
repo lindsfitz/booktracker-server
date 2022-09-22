@@ -1,5 +1,5 @@
 const sequelize = require("../config/connection");
-const { User, Book, Shelf, Review, Request } = require('../models')
+const { User, Book, Shelf, Review, Request, ActivityGoal } = require('../models');
 
 const seed = async () => {
     const userData = await User.bulkCreate([
@@ -7,19 +7,27 @@ const seed = async () => {
         email:"meep@meep.com",
         password:"password",
         first_name:'Lindsay',
-        username:"meep"
+        username:"meep",
+        created_at: new Date(),
+        last_login: new Date(),
+        about_me:'Just a girl who loves her books',
+        display_name: 'Meep Meep'
     },
     {
         email:"test@test.com",
         password:"password",
         first_name:'Tester',
-        username:"potato"
+        username:"potato",
+        created_at: new Date(),
+        last_login: new Date()
     },
     {
         email:"linds@linds.com",
         password:"password",
         first_name:'Hiiiiii',
-        username:"lfbaby"
+        username:"lfbaby",
+        created_at: new Date(),
+        last_login: new Date()
     }],
     {
         individualHooks:true
@@ -209,6 +217,7 @@ const seed = async () => {
     const reviewData = await Review.bulkCreate([
         {
             read:true,
+            public: false,
             date_started:"2022-09-08",
             date_finished:"2022-09-10",
             year_finished:2022,
@@ -223,6 +232,7 @@ const seed = async () => {
         },
         {
             read:true,
+            public: false,
             date_started:"2022-07-22",
             date_finished:"2022-07-24",
             year_finished:2022,
@@ -237,6 +247,7 @@ const seed = async () => {
         },
         {
             read:true,
+            public: false,
             date_started:"2022-08-22",
             date_finished:"2022-08-25",
             year_finished:2022,
@@ -251,15 +262,117 @@ const seed = async () => {
         },
         {
             read:false,
+            public: false,
             last_update: new Date(),
             UserId:1,
             BookId:9,
         },
     ])
 
+    const goalData = await ActivityGoal.bulkCreate([
+        {
+            month:8,
+            year:2022,
+            value:3,
+            UserId:1
+        },
+        {
+            month:7,
+            year:2022,
+            value:4,
+            UserId:1
+        },
+        {
+            year:2022,
+            value:40,
+            UserId:1
+        },
+        {
+            year: 2021,
+            value: 30,
+            UserId:1
+        },
+        {
+            year:2020,
+            value:36,
+            UserId:1
+        }
+    ])
+
     await userData[1].addSender(1)
 
     await userData[0].addBook(10)
+
+    await userData[0].addBook(bookData[0], {through: {
+        shelved: false,
+        reading: false,
+        read: true,
+        owned: false,
+        dnf:false
+    }})
+    await userData[0].addBook(bookData[1], {through: {
+        shelved: false,
+        reading: false,
+        read: true,
+        owned: false,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[2], {through: {
+        shelved: true,
+        reading: false,
+        read: false,
+        owned: false,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[3], {through: {
+        shelved: true,
+        reading: false,
+        read: false,
+        owned: false,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[4], {through: {
+        shelved: false,
+        reading: false,
+        read: true,
+        owned: true,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[5], {through: {
+        shelved: false,
+        reading: false,
+        read: true,
+        owned: true,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[6], {through: {
+        shelved: true,
+        reading: false,
+        read: false,
+        owned: false,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[7], {through: {
+        shelved: false,
+        reading: true,
+        read: false,
+        owned: false,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[8], {through: {
+        shelved: true,
+        reading: false,
+        read: false,
+        owned: false,
+        dnf: false
+    }})
+    await userData[0].addBook(bookData[9], {through: {
+        shelved: false,
+        reading: true,
+        read: false,
+        owned: false,
+        dnf: false
+    }})
 }
 
 sequelize.sync({force:true}).then(()=>{

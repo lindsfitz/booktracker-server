@@ -3,6 +3,8 @@ const Shelf = require('./Shelf')
 const Book = require('./Book')
 const Review = require('./Review')
 const Request = require('./Request')
+const Userbook = require('./Userbook')
+const ActivityGoal = require('./ActivityGoal')
 
 
 // Shelf belongs to User
@@ -30,9 +32,6 @@ User.hasMany(Review, {
     onDelete: 'CASCADE'
 })
 
-// Review belongs to Book
-// Book has many Review
-    // fk book id in Review table
 
 Review.belongsTo(Book)
 Book.hasMany(Review)
@@ -40,6 +39,13 @@ Book.hasMany(Review)
 
 User.belongsToMany(Book, {through:'CurrentlyReading'})
 Book.belongsToMany(User, {through:'CurrentlyReading'})
+
+
+User.belongsToMany(Book, {through: Userbook })
+Book.belongsToMany(User, {through: Userbook })
+
+ActivityGoal.belongsTo(User)
+User.hasMany(ActivityGoal)
 
 
 
@@ -66,5 +72,7 @@ module.exports = {
     Book,
     Shelf,
     Review,
-    Request
+    Request,
+    Userbook,
+    ActivityGoal
 }

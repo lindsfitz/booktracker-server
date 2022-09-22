@@ -20,11 +20,31 @@ User.init({
     },
     first_name: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false
     },
     username: {
         type: DataTypes.STRING,
     },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    last_login: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    about_me: {
+        type: DataTypes.TEXT,
+    },
+    display_name: {
+        type: DataTypes.STRING
+    },
+    profile_picture: {
+        type: DataTypes.STRING
+    },
+    favorite_shelf: {
+        type: DataTypes.INTEGER
+    }
 }, {
     hooks: {
         beforeCreate(newUser) {
