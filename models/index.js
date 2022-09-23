@@ -3,7 +3,6 @@ const Shelf = require('./Shelf')
 const Book = require('./Book')
 const Review = require('./Review')
 const Request = require('./Request')
-const Userbook = require('./Userbook')
 const ActivityGoal = require('./ActivityGoal')
 const Profile = require('./Profile')
 
@@ -90,6 +89,5 @@ module.exports = {
     Review,
     Request,
     Profile,
-    Userbook,
     ActivityGoal
 }

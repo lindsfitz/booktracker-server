@@ -1,13 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
-const { User, Profile } = require('../../models')
+const { User, Profile, Shelf } = require('../../models')
 const jwt = require("jsonwebtoken");
 const tokenAuth = require("../../middleware/tokenAuth")
 
 
 router.get("/", (req, res) => {
     User.findAll().then(users => res.json(users)).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
+
+router.get("/profile/:id",(req,res)=>{
+    Profile.findOne({
+        where:{
+            UserId:req.params.id
+        }
+    }).then(profile => {
+        res.json(profile)
+    }) .catch(err => {
         console.log(err)
         res.json(err)
     })
@@ -23,6 +36,11 @@ router.post("/signup", (req, res) => {
     }).then(async (newUser) => { 
         await Profile.create({
             username: req.body.username,
+            UserId: newUser.id
+        })
+        await Shelf.create({
+            name:"Want To Read",
+            last_update: new Date(),
             UserId: newUser.id
         })
         res.json(newUser)}
@@ -94,9 +112,9 @@ router.put('/update/account', (req, res) => {
 })
 
 router.put('/update/profile/:id', (req, res) => {
-    Profile.update(req.body, {
+    Profile.update({...req.body}, {
         where: {
-            id: req.params.id
+            UserId: req.params.id
         }
     }).then(data => {
         res.json(data)

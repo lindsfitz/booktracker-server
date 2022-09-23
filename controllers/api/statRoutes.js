@@ -1,12 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Review, Shelf } = require('../../models')
+const { Book, Review, Shelf, ActivityGoal } = require('../../models')
 const sequelize = require('../../config/connection')
 
 // pulls all stats at once from db before sending response -- needs error handling when I have wifi 
 //replace current year/month with actual values somehow (Date? not sure how to format)
 router.get('/all/:id/:year/:month', async (req, res) => {
-
     const allRead = await Book.findAll({
         where: {
             '$Reviews.UserId$': req.params.id,
@@ -124,6 +123,7 @@ router.get('/yearly/:year/:id',(req,res) => {
         })
 
 })
+
 
 
 module.exports = router
