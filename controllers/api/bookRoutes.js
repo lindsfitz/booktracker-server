@@ -43,10 +43,38 @@ router.get('/one/:bookid/:userid', (req, res) => {
         },
         {
             model:User,
+            as:'CurrentBooks',
             where:{
                 id:req.params.userid
             },
             attributes:['first_name'],
+            through:{
+                attributes:[]
+            },
+            required:false
+        },
+        {
+            model:User,
+            as:'OwnedBooks',
+            where:{
+                id:req.params.userid
+            },
+            attributes:['first_name'],
+            through:{
+                attributes:[]
+            },
+            required:false
+        },
+        {
+            model:User,
+            as:'DNFBooks',
+            where:{
+                id:req.params.userid
+            },
+            attributes:['first_name'],
+            through:{
+                attributes:[]
+            },
             required:false
         },
         {
@@ -57,6 +85,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             required:false
         },
         
+        
     ]
     })
         .then(book => { res.json(book) })
@@ -66,6 +95,24 @@ router.get('/one/:bookid/:userid', (req, res) => {
         })
 })
 
+// LIST OF ALL USER BOOKS MARKED AS 'READ'
+router.get('/read/:id', (req, res) => {
+    Book.findAll({
+        where: {
+            '$Reviews.UserId$': req.params.id,
+            '$Reviews.read$': true
+        },
+        order: [[Review, 'date_finished', 'DESC']],
+        include: [{
+            model: Review,
+            attributes: ['date_started','date_finished','rating']
+        }]
+    }).then(books => res.json(books))
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+})
 
 // post route for new books --- check to see if exists before actually adding a new one 
 router.post('/new', async (req, res) => {
@@ -86,7 +133,6 @@ router.post('/new', async (req, res) => {
     res.status(200).json(newBook)
 
 })
-
 
 // add a book to an existing shelf
 // also updates the 'last updated' column in shelf -- shelves sorted on main page by the most recently updated
@@ -123,6 +169,8 @@ router.delete('/remove/:shelfid/:bookid', (req, res) => {
 
 
 
+// -------------- NOT CURRENTLY USING 
+
 // ALL BOOKS associated w a user, on any shelf
 router.get('/user/:id', async (req, res) => {
     Shelf.findAll({
@@ -158,6 +206,7 @@ router.get('/user/:id', async (req, res) => {
 })
 
 
+// doesnt work bc of mix in method -- can fix if decided that I do want an allbooks list 
 router.get('/allbooks/:id', async (req, res) => {
 
     const allUserBooks = []
@@ -200,24 +249,7 @@ router.get('/allbooks/:id', async (req, res) => {
 
 
 
-// LIST OF ALL USER BOOKS MARKED AS 'READ'
-router.get('/read/:id', (req, res) => {
-    Book.findAll({
-        where: {
-            '$Reviews.UserId$': req.params.id,
-            '$Reviews.read$': true
-        },
-        order: [[Review, 'date_finished', 'DESC']],
-        include: [{
-            model: Review,
-            attributes: ['date_started','date_finished','rating']
-        }]
-    }).then(books => res.json(books))
-        .catch(err => {
-            console.log(err)
-            res.json(err)
-        })
-})
+
 
 
 

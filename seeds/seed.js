@@ -8,17 +8,13 @@ const seed = async () => {
         password:"password",
         first_name:'Lindsay',
         username:"meep",
-        created_at: new Date(),
         last_login: new Date(),
-        about_me:'Just a girl who loves her books',
-        display_name: 'Meep Meep'
     },
     {
         email:"test@test.com",
         password:"password",
         first_name:'Tester',
         username:"potato",
-        created_at: new Date(),
         last_login: new Date()
     },
     {
@@ -26,7 +22,6 @@ const seed = async () => {
         password:"password",
         first_name:'Hiiiiii',
         username:"lfbaby",
-        created_at: new Date(),
         last_login: new Date()
     }],
     {
@@ -34,7 +29,6 @@ const seed = async () => {
     })
 
     
-
     const requestData = await Request.bulkCreate([
         {
         accepted:false,
@@ -222,7 +216,6 @@ const seed = async () => {
             date_finished:"2022-09-10",
             year_finished:2022,
             month_finished: 8,
-            last_update:'2022-09-11',
             rating:5,
             review:"One of my favorite books of all time srsly",
             format:"Kindle",
@@ -237,7 +230,6 @@ const seed = async () => {
             date_finished:"2022-07-24",
             year_finished:2022,
             month_finished: 6,
-            last_update:'2022-07-26',
             rating:3,
             review:"I enjoyed it but objectively a bad book",
             format:"Kindle",
@@ -252,7 +244,6 @@ const seed = async () => {
             date_finished:"2022-08-25",
             year_finished:2022,
             month_finished: 7,
-            last_update:'2022-08-25',
             rating:4,
             review:"Best book in this series in my opinion",
             format:"Kindle",
@@ -263,7 +254,6 @@ const seed = async () => {
         {
             read:false,
             public: false,
-            last_update: new Date(),
             UserId:1,
             BookId:9,
         },
@@ -301,78 +291,88 @@ const seed = async () => {
 
     await userData[1].addSender(1)
 
-    await userData[0].addBook(10)
+    
 
-    await userData[0].addBook(bookData[0], {through: {
-        shelved: false,
-        reading: false,
-        read: true,
-        owned: false,
-        dnf:false
-    }})
-    await userData[0].addBook(bookData[1], {through: {
-        shelved: false,
-        reading: false,
-        read: true,
-        owned: false,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[2], {through: {
-        shelved: true,
-        reading: false,
-        read: false,
-        owned: false,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[3], {through: {
-        shelved: true,
-        reading: false,
-        read: false,
-        owned: false,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[4], {through: {
-        shelved: false,
-        reading: false,
-        read: true,
-        owned: true,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[5], {through: {
-        shelved: false,
-        reading: false,
-        read: true,
-        owned: true,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[6], {through: {
-        shelved: true,
-        reading: false,
-        read: false,
-        owned: false,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[7], {through: {
-        shelved: false,
-        reading: true,
-        read: false,
-        owned: false,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[8], {through: {
-        shelved: true,
-        reading: false,
-        read: false,
-        owned: false,
-        dnf: false
-    }})
-    await userData[0].addBook(bookData[9], {through: {
-        shelved: false,
-        reading: true,
-        read: false,
-        owned: false,
-        dnf: false
-    }})
+    // await userData[0].addBook(bookData[0], {through: {
+    //     shelved: false,
+    //     reading: false,
+    //     read: true,
+    //     owned: false,
+    //     dnf:false
+    // }})
+    // await userData[0].addBook(bookData[1], {through: {
+    //     shelved: false,
+    //     reading: false,
+    //     read: true,
+    //     owned: false,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[2], {through: {
+    //     shelved: true,
+    //     reading: false,
+    //     read: false,
+    //     owned: false,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[3], {through: {
+    //     shelved: true,
+    //     reading: false,
+    //     read: false,
+    //     owned: false,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[4], {through: {
+    //     shelved: false,
+    //     reading: false,
+    //     read: true,
+    //     owned: true,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[5], {through: {
+    //     shelved: false,
+    //     reading: false,
+    //     read: true,
+    //     owned: true,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[6], {through: {
+    //     shelved: true,
+    //     reading: false,
+    //     read: false,
+    //     owned: false,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[7], {through: {
+    //     shelved: false,
+    //     reading: true,
+    //     read: false,
+    //     owned: false,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[8], {through: {
+    //     shelved: true,
+    //     reading: false,
+    //     read: false,
+    //     owned: false,
+    //     dnf: false
+    // }})
+    // await userData[0].addBook(bookData[9], {through: {
+    //     shelved: false,
+    //     reading: true,
+    //     read: false,
+    //     owned: false,
+    //     dnf: false
+    // }})
+
+
+    await userData[0].addOnShelf(bookData[6])
+    await userData[0].addOnShelf(bookData[8])
+    await userData[0].addDNF(bookData[4])
+    await userData[0].addOwned(bookData[2])
+    await userData[0].addCurrentRead(bookData[5])
+    await userData[0].addCurrentRead(bookData[2])
+
+
 }
 
 sequelize.sync({force:true}).then(()=>{

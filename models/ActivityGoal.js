@@ -20,7 +20,4 @@ ActivityGoal.init({
     sequelize,
 });
 
-// fk references user_id 
-
-
 module.exports = ActivityGoal;

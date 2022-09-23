@@ -10,7 +10,7 @@ router.get('/all/:id', (req,res) => {
         where: {
             userId: req.params.id
         },
-        order:[['last_update','DESC']],
+        order:[['updatedAt','DESC']],
         include: [{
             model:Book
         }]
@@ -41,7 +41,10 @@ router.get('/one/:id', (req,res) => {
 // post route for new shelf
 
 router.post('/new', (req,res) => {
-    Shelf.create({...req.body})
+    Shelf.create({
+        ...req.body,
+        last_update: new Date(),
+    })
     .then(shelf => {res.json(shelf)
     }).catch(err => {
         console.log(err)

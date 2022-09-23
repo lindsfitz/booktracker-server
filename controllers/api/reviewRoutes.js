@@ -49,7 +49,7 @@ router.get('/:uid/:bid', (req, res) => {
             UserId: req.params.uid,
             BookId: req.params.bid
         },
-        order:[['last_update', 'DESC']]
+        order:[['updatedAt', 'DESC']]
     }).then(reviews => {
         res.json(reviews)
     }).catch(err => {

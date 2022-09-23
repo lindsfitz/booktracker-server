@@ -36,16 +36,8 @@ Review.init({
     series: {
         type: DataTypes.STRING,
     },
-    last_update: {
-        type: DataTypes.DATE,
-        allowNull:false,
-    }
 }, {
-    timestamps: false,
     sequelize,
 });
-
-// fk references user_id and book_id
-
 
 module.exports = Review;

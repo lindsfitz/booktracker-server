@@ -16,11 +16,10 @@ Shelf.init({
         allowNull:false,
     }
 }, {
-    timestamps: false,
+    // timestamps: false,
     sequelize,
 });
 
-// fk references user_id 
 
 
 module.exports = Shelf;

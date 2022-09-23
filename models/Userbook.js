@@ -25,11 +25,8 @@ Userbook.init({
         allowNull: false,
     },
 }, {
-    timestamps: false,
     sequelize,
 });
-
-// fk references user_id 
 
 
 module.exports = Userbook;

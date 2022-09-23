@@ -8,11 +8,8 @@ Request.init({
         type:DataTypes.BOOLEAN
     }
 }, {
-    timestamps: false,
     sequelize,
 });
-
-// fk references user_id 
 
 
 module.exports = Request;

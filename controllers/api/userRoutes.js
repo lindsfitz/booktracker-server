@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
-const { User } = require('../../models')
+const { User, Profile } = require('../../models')
 const jwt = require("jsonwebtoken");
 const tokenAuth = require("../../middleware/tokenAuth")
 
@@ -18,9 +18,15 @@ router.post("/signup", (req, res) => {
     User.create({
         email: req.body.email,
         password: req.body.password,
-        first_name:req.body.first_name,
-        username: req.body.username
-    }).then(newUser => res.json(newUser))
+        first_name: req.body.first_name,
+        last_login: new Date()
+    }).then(async (newUser) => { 
+        await Profile.create({
+            username: req.body.username,
+            UserId: newUser.id
+        })
+        res.json(newUser)}
+        )
         .catch(err => {
             console.log(err)
             res.json(err)
@@ -33,7 +39,6 @@ router.post("/login", (req, res) => {
         where: {
             email: req.body.email
         }
-
     }).then(foundUser => {
         if (!foundUser) {
             res.status(401).json({ message: "Incorrect Credentials" })
@@ -47,6 +52,9 @@ router.post("/login", (req, res) => {
                     , {
                         expiresIn: "2h"
                     })
+                foundUser.update({
+                    last_login: new Date()
+                })
                 res.json({
                     token: token,
                     user: foundUser
@@ -62,7 +70,7 @@ router.post("/login", (req, res) => {
 })
 
 // put route to update a user
-router.put('/update', (req, res) => {
+router.put('/update/account', (req, res) => {
     User.findOne({
         where: {
             email: req.body.email
@@ -83,13 +91,25 @@ router.put('/update', (req, res) => {
             }
         }
     })
-
 })
 
-router.delete('/delete/:id',(req,res)=>{
+router.put('/update/profile/:id', (req, res) => {
+    Profile.update(req.body, {
+        where: {
+            id: req.params.id
+        }
+    }).then(data => {
+        res.json(data)
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
+
+router.delete('/delete/:id', (req, res) => {
     User.destroy({
-        where:{
-            id:req.params.id
+        where: {
+            id: req.params.id
         }
     }).then(data => {
         res.json('user successfully deleted')

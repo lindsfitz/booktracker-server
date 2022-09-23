@@ -5,7 +5,13 @@ const Review = require('./Review')
 const Request = require('./Request')
 const Userbook = require('./Userbook')
 const ActivityGoal = require('./ActivityGoal')
+const Profile = require('./Profile')
 
+
+User.hasOne(Profile, {
+    onDelete: 'CASCADE'
+});
+Profile.belongsTo(User)
 
 // Shelf belongs to User
 // User has many Shelf
@@ -37,12 +43,22 @@ Review.belongsTo(Book)
 Book.hasMany(Review)
 
 
-User.belongsToMany(Book, {through:'CurrentlyReading'})
-Book.belongsToMany(User, {through:'CurrentlyReading'})
+
+User.belongsToMany(Book, {through:'Shelved', as: 'OnShelf'})
+
+User.belongsToMany(Book, {through:'CurrentlyReading', as: 'CurrentRead'})
+Book.belongsToMany(User, {through:'CurrentlyReading', as: 'CurrentBooks'})
+
+User.belongsToMany(Book, {through:'NotFinished', as: 'DNF'})
+Book.belongsToMany(User, {through:'NotFinished', as: 'DNFBooks'})
+
+User.belongsToMany(Book, {through:'OwnedItems', as: 'Owned'})
+Book.belongsToMany(User, {through:'OwnedItems', as: 'OwnedBooks'})
 
 
-User.belongsToMany(Book, {through: Userbook })
-Book.belongsToMany(User, {through: Userbook })
+
+
+
 
 ActivityGoal.belongsTo(User)
 User.hasMany(ActivityGoal)
@@ -50,12 +66,12 @@ User.hasMany(ActivityGoal)
 
 
 // Friends lists functionality being added potentially 
-User.belongsToMany(User, { as: 'Sender', foreignKey: 'SenderUserId', through: 'Friends' });
-User.belongsToMany(User, { as: 'Receiver', foreignKey: 'ReceiverUserId', through: 'Friends' });
+User.belongsToMany(User, { as: 'Sender', through: 'Friends' });
+User.belongsToMany(User, { as: 'Receiver', through: 'Friends' });
 // Request.belongsTo(User, {
 //     foreignKey:'senderId'
 // })
-
+// User.belongsToMany(User, {through: Request, as:'Sender'})
 Request.belongsTo(User,{
     foreignKey:'SenderId'
 })
@@ -73,6 +89,7 @@ module.exports = {
     Shelf,
     Review,
     Request,
+    Profile,
     Userbook,
     ActivityGoal
 }
