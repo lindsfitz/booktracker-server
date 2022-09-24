@@ -18,6 +18,9 @@ Profile.init({
     },
     favorite_shelf: {
         type: DataTypes.INTEGER
+    },
+    last_login: {
+        type: DataTypes.DATE
     }
 }, {
     timestamps: false,

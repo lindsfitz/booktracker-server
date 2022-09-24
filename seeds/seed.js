@@ -5,15 +5,13 @@ const seed = async () => {
     const userData = await User.bulkCreate([
         {
             email: "meep@meep.com",
-            password: "password",
-            first_name: 'Lindsay',
-            last_login: new Date(),
+            password:"password",
+            first_name:'Lindsay',
         },
         {
             email: "test@test.com",
-            password: "password",
-            first_name: 'Tester',
-            last_login: new Date()
+            password:"password",
+            first_name:'Tester',
         }],
         {
             individualHooks: true
@@ -21,9 +19,11 @@ const seed = async () => {
 
     userData[0].createProfile({
         username: "meep",
+        last_login: new Date()
     })
     userData[1].createProfile({
         username: "potato",
+        last_login: new Date()
     })
 
 

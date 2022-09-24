@@ -20,11 +20,7 @@ User.init({
     },
     first_name: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    last_login: {
-        type: DataTypes.DATE,
-        allowNull: false
+        allowNull:false
     },
 }, {
     hooks: {

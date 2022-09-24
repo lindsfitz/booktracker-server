@@ -13,14 +13,14 @@ router.get("/", (req, res) => {
     })
 })
 
-router.get("/profile/:id",(req,res)=>{
+router.get("/profile/:id", (req, res) => {
     Profile.findOne({
-        where:{
-            UserId:req.params.id
+        where: {
+            UserId: req.params.id
         }
     }).then(profile => {
         res.json(profile)
-    }) .catch(err => {
+    }).catch(err => {
         console.log(err)
         res.json(err)
     })
@@ -33,23 +33,24 @@ router.post("/signup", (req, res) => {
         password: req.body.password,
         first_name: req.body.first_name,
         last_login: new Date()
-    }).then(async (newUser) => { 
+    }).then(async (newUser) => {
         await Profile.create({
             username: req.body.username,
             UserId: newUser.id
         })
         await Shelf.create({
-            name:"Want To Read",
+            name: "Want To Read",
             last_update: new Date(),
             UserId: newUser.id
         })
-        res.json(newUser)}
-        )
+        res.json(newUser)
+    })
         .catch(err => {
             console.log(err)
             res.json(err)
         })
 })
+
 
 // post route for login 
 router.post("/login", (req, res) => {
@@ -65,19 +66,24 @@ router.post("/login", (req, res) => {
                 const token = jwt.sign({
                     email: foundUser.email,
                     id: foundUser.id
-                },
-                    process.env.JWT_SECRET
-                    , {
-                        expiresIn: "2h"
-                    })
-                foundUser.update({
-                    last_login: new Date()
+                }, process.env.JWT_SECRET, {
+                    expiresIn: "2h"
                 })
+
+                Profile.update({
+                    last_login: new Date()
+                }, {
+                    where: {
+                        UserId: foundUser.id
+                    }
+                })
+
                 res.json({
                     token: token,
                     user: foundUser
                 })
             } else {
+                console.log('wtf', req.body.password)
                 res.json("Incorrect Credentials")
             }
         }
@@ -112,7 +118,7 @@ router.put('/update/account', (req, res) => {
 })
 
 router.put('/update/profile/:id', (req, res) => {
-    Profile.update({...req.body}, {
+    Profile.update({ ...req.body }, {
         where: {
             UserId: req.params.id
         }
