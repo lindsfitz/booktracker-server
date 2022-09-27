@@ -60,6 +60,26 @@ router.get('/year/:year/:id', async (req,res)=> {
     return res.status(200).json(yearGoal)
 })
 
+router.put('/update/:id', (req,res) => {
+    const now = new Date()
+    // const month = now.getMonth();
+    const year = now.getFullYear();
+    ActivityGoal.update({
+        value: req.body.value
+    }, {
+        where: {
+            month: req.body.month,
+            year: year,
+            UserId: req.params.id
+        }
+    }).then(response => {
+        res.json(response)
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
+    })
+})
+
 // post new goal 
 router.post('/new', (req,res) => {
     ActivityGoal.create({...req.body})
