@@ -9,10 +9,8 @@ Tag.init({
         allowNull: false,
     },
 }, {
-    timestamps: false,
     sequelize,
 });
-
 // fk references user_id 
 
 

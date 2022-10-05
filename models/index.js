@@ -1,6 +1,7 @@
 const User = require('./User')
 const Shelf = require('./Shelf')
 const Book = require('./Book')
+const Tag = require('./Tag')
 const Review = require('./Review')
 const Request = require('./Request')
 const ActivityGoal = require('./ActivityGoal')
@@ -37,7 +38,6 @@ User.hasMany(Review, {
     onDelete: 'CASCADE'
 })
 
-
 Review.belongsTo(Book)
 Book.hasMany(Review)
 
@@ -54,7 +54,15 @@ Book.belongsToMany(User, {through:'NotFinished', as: 'DNFBooks'})
 User.belongsToMany(Book, {through:'OwnedItems', as: 'Owned'})
 Book.belongsToMany(User, {through:'OwnedItems', as: 'OwnedBooks'})
 
+User.belongsToMany(Book, {through:'MarkedRead', as: 'Read'})
+Book.belongsToMany(User, {through:'MarkedRead', as: 'ReadBooks'})
 
+
+Profile.belongsToMany(Tag, {through:'UserTags'})
+Tag.belongsToMany(Profile, {through:'UserTags'})
+
+Book.belongsToMany(Tag, {through:'BookTag'})
+Tag.belongsToMany(Book,{through:'BookTag'})
 
 
 
@@ -76,6 +84,9 @@ Request.belongsTo(User,{
 })
 // User.hasMany(Request)
 
+// User.belongsToMany(User, {through: {model: Request}, as:'Sent'})
+// User.belongsToMany(User, {through: {model: Request}, as:'Recieved'})
+
 Request.belongsTo(User,{
     foreignKey:'ReceiverId'
 })
@@ -83,6 +94,7 @@ Request.belongsTo(User,{
 
 
 module.exports = {
+    Tag,
     User,
     Book,
     Shelf,

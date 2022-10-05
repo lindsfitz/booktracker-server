@@ -14,6 +14,9 @@ Shelf.init({
     last_update: {
         type: DataTypes.DATE,
         allowNull:false,
+    },
+    public:{
+        type: DataTypes.BOOLEAN
     }
 }, {
     // timestamps: false,

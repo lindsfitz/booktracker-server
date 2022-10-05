@@ -26,7 +26,7 @@ Book.init({
         type: DataTypes.INTEGER,
     },
     published: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
     },
     ol_key: {
         type: DataTypes.STRING,
