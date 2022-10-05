@@ -31,62 +31,62 @@ router.get('/one/:id', (req, res) => {
 // get one book for userbook page, include books associated shelves & if currently reading
 router.get('/one/:bookid/:userid', (req, res) => {
     Book.findOne({
-        where:{
-            id:req.params.bookid
-        }, 
-        include:[{
-            model:Shelf,
-            where:{
-                UserId:req.params.userid
+        where: {
+            id: req.params.bookid
+        },
+        include: [{
+            model: Shelf,
+            where: {
+                UserId: req.params.userid
             },
-            required:false
+            required: false
         },
         {
-            model:User,
-            as:'CurrentBooks',
-            where:{
-                id:req.params.userid
+            model: User,
+            as: 'CurrentBooks',
+            where: {
+                id: req.params.userid
             },
-            attributes:['first_name'],
-            through:{
-                attributes:[]
+            attributes: ['first_name'],
+            through: {
+                attributes: []
             },
-            required:false
+            required: false
         },
         {
-            model:User,
-            as:'OwnedBooks',
-            where:{
-                id:req.params.userid
+            model: User,
+            as: 'OwnedBooks',
+            where: {
+                id: req.params.userid
             },
-            attributes:['first_name'],
-            through:{
-                attributes:[]
+            attributes: ['first_name'],
+            through: {
+                attributes: []
             },
-            required:false
+            required: false
         },
         {
-            model:User,
-            as:'DNFBooks',
-            where:{
-                id:req.params.userid
+            model: User,
+            as: 'DNFBooks',
+            where: {
+                id: req.params.userid
             },
-            attributes:['first_name'],
-            through:{
-                attributes:[]
+            attributes: ['first_name'],
+            through: {
+                attributes: []
             },
-            required:false
+            required: false
         },
         {
-            model:Review,
-            where:{
-                UserId:req.params.userid
+            model: Review,
+            where: {
+                UserId: req.params.userid
             },
-            required:false
+            required: false
         },
-        
-        
-    ]
+
+
+        ]
     })
         .then(book => { res.json(book) })
         .catch(err => {
@@ -105,7 +105,7 @@ router.get('/read/:id', (req, res) => {
         order: [[Review, 'date_finished', 'DESC']],
         include: [{
             model: Review,
-            attributes: ['date_started','date_finished','rating']
+            attributes: ['date_started', 'date_finished', 'rating']
         }]
     }).then(books => res.json(books))
         .catch(err => {
@@ -116,21 +116,27 @@ router.get('/read/:id', (req, res) => {
 
 // post route for new books --- check to see if exists before actually adding a new one 
 router.post('/new', async (req, res) => {
-    const bookCheck = await Book.findOne({
-        where: {
-            title: req.body.title,
-            author: req.body.author
+    try {
+        const bookCheck = await Book.findOne({
+            where: {
+                title: req.body.title,
+                author: req.body.author
+            }
+        })
+        console.log(bookCheck)
+
+        if (bookCheck) {
+            return res.json(bookCheck)
         }
-    })
-    console.log(bookCheck)
 
-    if (bookCheck) {
-        return res.json(bookCheck)
+        const newBook = await Book.create({ ...req.body })
+
+        res.status(200).json(newBook)
     }
-
-    const newBook = await Book.create({ ...req.body })
-
-    res.status(200).json(newBook)
+    catch (error) {
+        console.log(error)
+        res.json(error)
+    }
 
 })
 
@@ -209,42 +215,49 @@ router.get('/user/:id', async (req, res) => {
 // doesnt work bc of mix in method -- can fix if decided that I do want an allbooks list 
 router.get('/allbooks/:id', async (req, res) => {
 
-    const allUserBooks = []
+    try {
+        const allUserBooks = []
 
-    const user = await User.findByPk(req.params.id, {
-        include: [ 
-        {
-            model: Shelf,
-            // attributes: [],
-            include: [{
-                model: Book,
-                through: { attributes: [] }
-            }]
-        }],
-    })
+        const user = await User.findByPk(req.params.id, {
+            include: [
+                {
+                    model: Shelf,
+                    // attributes: [],
+                    include: [{
+                        model: Book,
+                        through: { attributes: [] }
+                    }]
+                }],
+        })
 
-    const reading = await user.getBooks({ joinTableAttributes: [], raw: true })
+        const reading = await user.getBooks({ joinTableAttributes: [], raw: true })
 
-    for (const book of reading){
-        allUserBooks.push(book)
-    }
-
-    for (const shelf of user.Shelves) {
-        const books = await shelf.getBooks({ joinTableAttributes: [], raw: true })
-        console.log(books)
-        for (const book of books) {
-            const index = books.findIndex(object => {
-                return object.title === book.title
-            })
-            console.log(index)
-            if (!index) {
-                allUserBooks.push(book)
-            }
+        for (const book of reading) {
+            allUserBooks.push(book)
         }
 
+        for (const shelf of user.Shelves) {
+            const books = await shelf.getBooks({ joinTableAttributes: [], raw: true })
+            console.log(books)
+            for (const book of books) {
+                const index = books.findIndex(object => {
+                    return object.title === book.title
+                })
+                console.log(index)
+                if (!index) {
+                    allUserBooks.push(book)
+                }
+            }
+
+        }
+
+        return res.status(200).json(allUserBooks)
     }
 
-    return res.status(200).json(allUserBooks)
+    catch (error) {
+        console.log(error)
+        res.json(error)
+    }
 })
 
 

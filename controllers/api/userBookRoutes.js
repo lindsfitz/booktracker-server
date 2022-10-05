@@ -58,6 +58,9 @@ router.post('/finishedreading', (req, res) => {
             ...req.body
         })
         res.status(200).json(newReview)
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
     })
 })
 
@@ -67,6 +70,9 @@ router.post('/moveto/dnf', (req, res) => {
         await user.removeCurrentRead(req.body.bookId)
         await user.addDNF(req.body.bookId)
         res.status(200).json({ message: 'removed book from currently reading to DNF list'})
+    }).catch(err => {
+        console.log(err)
+        res.json(err)
     })
 })
 
