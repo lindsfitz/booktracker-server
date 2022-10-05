@@ -83,7 +83,7 @@ router.post("/login", (req, res) => {
                     user: foundUser
                 })
             } else {
-                console.log('wtf', req.body.password)
+                
                 res.json("Incorrect Credentials")
             }
         }

@@ -26,6 +26,42 @@ router.get('/one/:id', (req, res) => {
         })
 })
 
+// check for book by ID & check for book by title & author 
+router.put('/bookcheck/:id', async (req, res) => {
+    try {
+        const bookById = await Book.findByPk(req.params.id)
+        const bookByData = await Book.findOne({
+            where:{
+                title: req.body.title,
+                author: req.body.author
+            }
+        })
+
+        if (bookById) {
+            return res.status(200).json(bookById)
+        }
+
+        if (bookByData) {
+            return res.status(200).json(bookByData)
+        }
+
+        return res.json('book does not exist')
+
+    }
+
+    catch (err) {
+        console.log(err)
+        res.json(err)
+    }
+
+    // Book.findByPk(req.params.id)
+    //     .then(book => { res.json(book) })
+    //     .catch(err => {
+    //         console.log(err)
+    //         res.json(err)
+    //     })
+})
+
 
 
 // get one book for userbook page, include books associated shelves & if currently reading
