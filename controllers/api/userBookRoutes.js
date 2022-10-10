@@ -6,8 +6,32 @@ const sequelize = require('../../config/connection')
 // Get all currently reading
 router.get('/currentreads/:id', async (req, res) => {
     try {
-        const user = await User.findByPk(req.body.userId)
-        const books = await user.getCurrentRead({ joinTableAttributes: [], raw: true })
+        const books = await Book.findAll({
+            where: {
+                '$CurrentBooks.CurrentlyReading.UserId$': req.params.id
+            },
+            attributes: ['id', 'title', 'author', 'cover_img',],
+            // order: [{ model: User, as: 'OwnedBooks' }, 'createdAt', 'DESC'],
+            include: [{
+                model: User,
+                as: 'CurrentBooks',
+                attributes: ['id'],
+                through: {
+                    attributes: ['createdAt']
+                },
+            },
+            {
+                model: Shelf,
+                where: {
+                    UserId: req.params.id
+                },
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },
+                required: false
+            },]
+        })
         return res.status(200).json(books)
     } catch (err) {
         console.log(err)
@@ -18,8 +42,32 @@ router.get('/currentreads/:id', async (req, res) => {
 // get ALL unfinished books -- get all 'DNF' books
 router.get('/dnf/:id', async (req, res) => {
     try {
-        const user = await User.findByPk(req.body.userId)
-        const books = await user.getDNF({ joinTableAttributes: [], raw: true })
+        const books = await Book.findAll({
+            where: {
+                '$DNFBooks.NotFinished.UserId$': req.params.id
+            },
+            attributes: ['id', 'title', 'author', 'cover_img',],
+            // order: [{ model: User, as: 'OwnedBooks' }, 'createdAt', 'DESC'],
+            include: [{
+                model: User,
+                as: 'DNFBooks',
+                attributes: ['id'],
+                through: {
+                    attributes: ['createdAt']
+                },
+            },
+            {
+                model: Shelf,
+                where: {
+                    UserId: req.params.id
+                },
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },
+                required: false
+            },]
+        })
         return res.status(200).json(books)
     } catch (err) {
         console.log(err)
@@ -31,8 +79,32 @@ router.get('/dnf/:id', async (req, res) => {
 // get ALL owned books -- all 'Owned' books
 router.get('/owned/:id', async (req, res) => {
     try {
-        const user = await User.findByPk(req.body.userId)
-        const books = await user.getOwned({ joinTableAttributes: [], raw: true })
+        const books = await Book.findAll({
+            where: {
+                '$OwnedBooks.OwnedItems.UserId$': req.params.id
+            },
+            attributes: ['id', 'title', 'author', 'cover_img',],
+            // order: [{ model: User, as: 'OwnedBooks' }, 'createdAt', 'DESC'],
+            include: [{
+                model: User,
+                as: 'OwnedBooks',
+                attributes: ['id'],
+                through: {
+                    attributes: ['createdAt']
+                },
+            },
+            {
+                model: Shelf,
+                where: {
+                    UserId: req.params.id
+                },
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },
+                required: false
+            },]
+        })
         return res.status(200).json(books)
     } catch (err) {
         console.log(err)
@@ -41,16 +113,6 @@ router.get('/owned/:id', async (req, res) => {
 
 })
 
-// get ALL read books
-// router.get('/read/:id', (req, res) => {
-//     User.findByPk(req.params.id).then(async user => {
-//         const books = await user.getRead({ raw: true })
-//         return res.status(200).json(books)
-//     }).catch(err => {
-//         console.log(err)
-//         res.json(err)
-//     })
-// })
 
 router.get('/read/:id', (req, res) => {
     Book.findAll({
@@ -72,6 +134,17 @@ router.get('/read/:id', (req, res) => {
             }, {
                 model: Review,
                 attributes: ['date_started', 'date_finished', 'rating'],
+                required: false
+            },
+            {
+                model: Shelf,
+                where: {
+                    UserId: req.params.id
+                },
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },
                 required: false
             },
         ]
