@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Shelf, Review } = require('../../models')
+const { Book, Shelf, Review, User } = require('../../models')
 
 
 router.get('/', (req, res) => {
@@ -49,7 +49,7 @@ router.get('/:uid/:bid', (req, res) => {
             UserId: req.params.uid,
             BookId: req.params.bid
         },
-        order:[['updatedAt', 'DESC']]
+        order: [['updatedAt', 'DESC']]
     }).then(reviews => {
         res.json(reviews)
     }).catch(err => {
@@ -60,9 +60,32 @@ router.get('/:uid/:bid', (req, res) => {
 
 // post route for new review (must include book id and user id)
 
-router.post('/new', (req, res) => {
-    Review.create({ ...req.body })
-        .then(review => { res.json(review) })
+router.post('/new/note', (req, res) => {
+    Review.create({
+        read: false,
+        ...req.body
+    })
+        .then(review => {
+            res.json(review)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+})
+
+router.post('/new/review', (req, res) => {
+    Review.create({
+        read: true,
+        ...req.body
+    })
+        .then(review => {
+            User.findByPk(req.body.UserId).then(async user => {
+                try { await user.addRead(req.body.BookId) }
+                catch (err) { console.log(err) }
+                res.json(review)
+            })
+        })
         .catch(err => {
             console.log(err)
             res.json(err)

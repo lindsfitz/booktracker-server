@@ -3,8 +3,7 @@ const router = express.Router()
 const { Shelf, Book, User, Review } = require('../../models')
 
 
-// get all shelves by one user based on user id 
-
+ /* get all shelves by one user based on user id -- currently being used on front end when new shelf is added to pull all shelves & update context */
 router.get('/all/:id', (req, res) => {
     Shelf.findAll({
         where: {
@@ -22,22 +21,8 @@ router.get('/all/:id', (req, res) => {
         })
 })
 
-// get one shelf based on shelf id
 
-router.get('/one/:id', (req, res) => {
-    Shelf.findByPk(req.params.id
-        , {
-            include: [{
-                model: Book
-            }]
-        })
-        .then(shelf => res.json(shelf))
-        .catch(err => {
-            console.log(err)
-            res.json(err)
-        })
-})
-
+/* Used to pull all data about one shelf & all associated books + their associated data for the single Shelf by id page */
 router.get('/userone/:shelfid/:userid', (req, res) => {
     Shelf.findByPk(req.params.shelfid
         , {
@@ -91,6 +76,18 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         required: false
                     },
                     {
+                        model: User,
+                        as: 'ReadBooks',
+                        where: {
+                            id: req.params.userid
+                        },
+                        attributes: ['first_name'],
+                        through: {
+                            attributes: []
+                        },
+                        required: false
+                    },
+                    {
                         model: Review,
                         where: {
                             UserId: req.params.userid,
@@ -110,8 +107,8 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
         })
 })
 
-// post route for new shelf
 
+/* Adds new shelf */
 router.post('/new', (req, res) => {
     Shelf.create({
         ...req.body,
@@ -125,8 +122,8 @@ router.post('/new', (req, res) => {
         })
 })
 
-// put route for updating name/description on shelf
 
+/* Can edit existing shelf - can change name, description, 'public' */
 router.put('/update/:id', (req, res) => {
     Shelf.update({
         ...req.body,
@@ -143,8 +140,8 @@ router.put('/update/:id', (req, res) => {
     })
 })
 
-// delete route to remove shelves 
 
+/* Deletes existing shelf by id */ 
 router.delete('/delete/:id', (req, res) => {
     Shelf.destroy({
         where: {
@@ -156,6 +153,24 @@ router.delete('/delete/:id', (req, res) => {
         console.log(err)
         res.json(err)
     })
+})
+
+
+
+
+/* --- NOT CURRENTLY BEING USED - get one shelf based on shelf id & associated books (no extra book info included. Keep for dev testing purposes but can remove from front end API file) */
+router.get('/one/:id', (req, res) => {
+    Shelf.findByPk(req.params.id
+        , {
+            include: [{
+                model: Book
+            }]
+        })
+        .then(shelf => res.json(shelf))
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
 })
 
 module.exports = router

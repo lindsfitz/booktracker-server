@@ -31,7 +31,7 @@ router.put('/bookcheck/:id', async (req, res) => {
     try {
         const bookById = await Book.findByPk(req.params.id)
         const bookByData = await Book.findOne({
-            where:{
+            where: {
                 title: req.body.title,
                 author: req.body.author
             }
@@ -114,6 +114,18 @@ router.get('/one/:bookid/:userid', (req, res) => {
             required: false
         },
         {
+            model: User,
+            as: 'ReadBooks',
+            where: {
+                id: req.params.userid
+            },
+            attributes: ['first_name'],
+            through: {
+                attributes: []
+            },
+            required: false
+        },
+        {
             model: Review,
             where: {
                 UserId: req.params.userid
@@ -179,8 +191,9 @@ router.post('/new', async (req, res) => {
 // add a book to an existing shelf
 // also updates the 'last updated' column in shelf -- shelves sorted on main page by the most recently updated
 
-router.post('/addto/:shelfid', (req, res) => {
-    Book.findByPk(req.body.id).then(async book => {
+router.post('/addto/:shelfid', async (req, res) => {
+    try {
+        const book = await Book.findByPk(req.body.id)
         await book.addShelf(req.params.shelfid)
         await Shelf.update({
             last_update: new Date()
@@ -191,22 +204,23 @@ router.post('/addto/:shelfid', (req, res) => {
                 }
             })
         return res.json({ message: 'added book to shelf!' })
-    }).catch(err => {
+    } catch (err) {
         console.log(err)
         res.json(err)
-    })
+    }
 })
 
 // DELETE route to remove a book from a shelf
 
-router.delete('/remove/:shelfid/:bookid', (req, res) => {
-    Book.findByPk(req.params.bookid).then(async book => {
+router.delete('/remove/:shelfid/:bookid', async (req, res) => {
+    try {
+        const book = await Book.findByPk(req.params.bookid)
         await book.removeShelf(req.params.shelfid)
         return res.json({ message: 'removed book from shelf!' })
-    }).catch(err => {
+    } catch (err) {
         console.log(err)
         res.json(err)
-    })
+    }
 })
 
 

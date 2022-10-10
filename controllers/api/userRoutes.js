@@ -34,16 +34,19 @@ router.post("/signup", (req, res) => {
         first_name: req.body.first_name,
         last_login: new Date()
     }).then(async (newUser) => {
-        await Profile.create({
-            username: req.body.username,
-            UserId: newUser.id
-        })
-        await Shelf.create({
-            name: "Want To Read",
-            last_update: new Date(),
-            UserId: newUser.id
-        })
-        res.json(newUser)
+        try {
+            await Profile.create({
+                username: req.body.username,
+                UserId: newUser.id
+            })
+            await Shelf.create({
+                name: "Want To Read",
+                last_update: new Date(),
+                UserId: newUser.id
+            })
+            res.json(newUser)
+        }
+        catch (err) { console.log(err) }
     })
         .catch(err => {
             console.log(err)
@@ -83,7 +86,7 @@ router.post("/login", (req, res) => {
                     user: foundUser
                 })
             } else {
-                
+
                 res.json("Incorrect Credentials")
             }
         }
