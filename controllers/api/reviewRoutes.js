@@ -3,36 +3,12 @@ const router = express.Router()
 const { Book, Shelf, Review, User } = require('../../models')
 
 
-router.get('/', (req, res) => {
-    Review.findAll().then(review => {
-        res.json(review)
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
-})
-
-// get route for all reviews based on book id
-
-// router.get('/bk/:id', (req, res) => {
-//     Review.findAll({
-//         where: {
-//             BookId: req.params.id
-//         }
-//     }).then(reviews => {
-//         res.json(reviews)
-//     }).catch(err => {
-//         console.log(err)
-//         res.json(err)
-//     })
-// })
-
-// get route for all reviews based on user id 
-
-router.get('/usr/:id', (req, res) => {
+// get route for all PUBLIC reviews based on book id
+router.get('/book/:id', (req, res) => {
     Review.findAll({
         where: {
-            UserId: req.params.id
+            BookId: req.params.id,
+            public:true
         }
     }).then(reviews => {
         res.json(reviews)
@@ -58,8 +34,7 @@ router.get('/:uid/:bid', (req, res) => {
     })
 })
 
-// post route for new review (must include book id and user id)
-
+// post route for new NOTE -- read:false ALWAYS (must include book id and user id)
 router.post('/new/note', (req, res) => {
     Review.create({
         read: false,
@@ -74,6 +49,7 @@ router.post('/new/note', (req, res) => {
         })
 })
 
+// post route for new REVIEW -- read:true ALWAYS (must include book id and user id)
 router.post('/new/review', (req, res) => {
     Review.create({
         read: true,

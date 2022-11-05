@@ -7,6 +7,11 @@ Profile.init({
     username: {
         type: DataTypes.STRING,
     },
+    public: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
     about_me: {
         type: DataTypes.TEXT,
     },

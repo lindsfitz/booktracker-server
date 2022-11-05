@@ -9,6 +9,7 @@ const friendRoutes = require("./friendRoutes")
 const activityRoutes = require('./activityRoutes')
 const nytRoutes = require('./nytRoutes')
 const userBookRoutes = require('./userBookRoutes')
+const tagRoutes = require('./tagRoutes')
 
 
 router.use("/user",userRoutes)
@@ -20,5 +21,6 @@ router.use('/stats',statRoutes)
 router.use('/activity', activityRoutes)
 router.use('/nyt', nytRoutes)
 router.use('/userbooks', userBookRoutes)
+router.use('/tags', tagRoutes)
 
 module.exports = router;
