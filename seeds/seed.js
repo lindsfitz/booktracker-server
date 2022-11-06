@@ -461,7 +461,7 @@ sequelize.query("SET FOREIGN_KEY_CHECKS = 0").then(()=> {
     sequelize.sync({ force: true }).
     then(() => {
         seed().then(()=> {
-            db.query('SET FOREIGN_KEY_CHECKS = 1')
+            sequelize.query('SET FOREIGN_KEY_CHECKS = 1')
         })
     })
 
