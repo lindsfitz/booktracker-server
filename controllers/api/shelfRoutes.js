@@ -45,7 +45,7 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
@@ -57,7 +57,7 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
@@ -69,7 +69,7 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
@@ -81,22 +81,13 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
                         required: false
                     },
-                    {
-                        model: Review,
-                        where: {
-                            UserId: req.params.userid,
-                            read:true
-                        },
-                        attributes:['read'],
-                        required: false
-                    },
-
+                   
                 ]
             }]
         })
@@ -159,18 +150,18 @@ router.delete('/delete/:id', (req, res) => {
 
 
 /* --- NOT CURRENTLY BEING USED - get one shelf based on shelf id & associated books (no extra book info included. Keep for dev testing purposes but can remove from front end API file) */
-router.get('/one/:id', (req, res) => {
-    Shelf.findByPk(req.params.id
-        , {
-            include: [{
-                model: Book
-            }]
-        })
-        .then(shelf => res.json(shelf))
-        .catch(err => {
-            console.log(err)
-            res.json(err)
-        })
-})
+// router.get('/one/:id', (req, res) => {
+//     Shelf.findByPk(req.params.id
+//         , {
+//             include: [{
+//                 model: Book
+//             }]
+//         })
+//         .then(shelf => res.json(shelf))
+//         .catch(err => {
+//             console.log(err)
+//             res.json(err)
+//         })
+// })
 
 module.exports = router

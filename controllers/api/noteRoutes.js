@@ -1,52 +1,31 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Shelf, Review, User } = require('../../models')
+const { Book, Shelf, Review, User, Note } = require('../../models')
 
-
-// get route for all PUBLIC reviews based on book id
-router.get('/book/:id', (req, res) => {
-    Review.findAll({
-        where: {
-            BookId: req.params.id,
-            public:true
-        }
-    }).then(reviews => {
-        res.json(reviews)
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
-})
 
 // all users reviews on one specific book 
 router.get('/:uid/:bid', (req, res) => {
-    Review.findAll({
+    Note.findAll({
         where: {
             UserId: req.params.uid,
             BookId: req.params.bid
         },
         order: [['updatedAt', 'DESC']]
-    }).then(reviews => {
-        res.json(reviews)
+    }).then(notes => {
+        res.json(notes)
     }).catch(err => {
         console.log(err)
         res.json(err)
     })
 })
 
-
-
-// post route for new REVIEW -- read:true ALWAYS (must include book id and user id)
+// post route for new NOTE (must include book id and user id)
 router.post('/new', (req, res) => {
-    Review.create({
+    Note.create({
         ...req.body
     })
-        .then(review => {
-            User.findByPk(req.body.UserId).then(async user => {
-                try { await user.addRead(req.body.BookId) }
-                catch (err) { console.log(err) }
-                res.json(review)
-            })
+        .then(note => {
+            res.json(note)
         })
         .catch(err => {
             console.log(err)
@@ -54,14 +33,15 @@ router.post('/new', (req, res) => {
         })
 })
 
-// put route to update review
+
+// put route to update note
 router.put('/update/:id', (req, res) => {
-    Review.update(req.body, {
+    Note.update(req.body, {
         where: {
             id: req.params.id
         }
     }).then(data => {
-        res.json('review updated')
+        res.json('note updated')
     }).catch(err => {
         console.log(err)
         res.json(err)
@@ -71,7 +51,7 @@ router.put('/update/:id', (req, res) => {
 
 // delete route to remove review 
 router.delete('/delete/:id', (req, res) => {
-    Review.destroy({
+    Note.destroy({
         where: {
             id: req.params.id
         }
@@ -83,4 +63,5 @@ router.delete('/delete/:id', (req, res) => {
     })
 })
 
-module.exports = router
+
+module.exports = router;

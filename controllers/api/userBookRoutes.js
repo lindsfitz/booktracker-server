@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Review, Shelf, User } = require('../../models')
+const { Book, Review, Shelf, User, Note } = require('../../models')
 const sequelize = require('../../config/connection')
 
 // Get all currently reading
@@ -10,8 +10,8 @@ router.get('/currentreads/:id', async (req, res) => {
             where: {
                 '$CurrentBooks.CurrentlyReading.UserId$': req.params.id
             },
-            attributes: ['id', 'title', 'author', 'cover_img',],
-            // order: [{ model: User, as: 'OwnedBooks' }, 'createdAt', 'DESC'],
+            attributes: ['id', 'title', 'author', 'cover_img', 'pages'],
+            order: [[sequelize.col('CurrentBooks.CurrentlyReading.createdAt'), 'DESC']],
             include: [{
                 model: User,
                 as: 'CurrentBooks',
@@ -30,98 +30,33 @@ router.get('/currentreads/:id', async (req, res) => {
                     attributes: []
                 },
                 required: false
-            },]
-        })
-        return res.status(200).json(books)
-    } catch (err) {
-        console.log(err)
-        res.json(err)
-    }
-})
-
-// get ALL unfinished books -- get all 'DNF' books
-router.get('/dnf/:id', async (req, res) => {
-    try {
-        const books = await Book.findAll({
-            where: {
-                '$DNFBooks.NotFinished.UserId$': req.params.id
-            },
-            attributes: ['id', 'title', 'author', 'cover_img',],
-            // order: [{ model: User, as: 'OwnedBooks' }, 'createdAt', 'DESC'],
-            include: [{
-                model: User,
-                as: 'DNFBooks',
-                attributes: ['id'],
-                through: {
-                    attributes: ['createdAt']
-                },
             },
             {
-                model: Shelf,
+                model: Note,
                 where: {
                     UserId: req.params.id
                 },
-                attributes: ['id', 'name'],
-                through: {
-                    attributes: []
-                },
+                order: [['createdAt', 'DESC']],
+                limit:1,
                 required: false
-            },]
+            }
+        ]
         })
         return res.status(200).json(books)
     } catch (err) {
         console.log(err)
         res.json(err)
     }
-
 })
 
-// get ALL owned books -- all 'Owned' books
-router.get('/owned/:id', async (req, res) => {
-    try {
-        const books = await Book.findAll({
-            where: {
-                '$OwnedBooks.OwnedItems.UserId$': req.params.id
-            },
-            attributes: ['id', 'title', 'author', 'cover_img',],
-            // order: [{ model: User, as: 'OwnedBooks' }, 'createdAt', 'DESC'],
-            include: [{
-                model: User,
-                as: 'OwnedBooks',
-                attributes: ['id'],
-                through: {
-                    attributes: ['createdAt']
-                },
-            },
-            {
-                model: Shelf,
-                where: {
-                    UserId: req.params.id
-                },
-                attributes: ['id', 'name'],
-                through: {
-                    attributes: []
-                },
-                required: false
-            },]
-        })
-        return res.status(200).json(books)
-    } catch (err) {
-        console.log(err)
-        res.json(err)
-    }
-
-})
-
-
+// get ALL read books
 router.get('/read/:id', (req, res) => {
     Book.findAll({
         where: {
             '$ReadBooks.MarkedRead.UserId$': req.params.id,
         },
         attributes: ['id', 'title', 'author', 'cover_img',],
-        order: [[Review, 'date_finished', 'DESC']
-            // [{ model: User, as: 'ReadBooks' }, 'MarkedRead', 'createdAt', 'DESC']
+        order: [[Review, 'date_finished', 'DESC'], [sequelize.col('ReadBooks.MarkedRead.createdAt'), 'DESC']
         ],
         include: [
             {
@@ -157,6 +92,83 @@ router.get('/read/:id', (req, res) => {
         })
 })
 
+// get ALL unfinished books -- get all 'DNF' books
+router.get('/dnf/:id', async (req, res) => {
+    try {
+        const books = await Book.findAll({
+            where: {
+                '$DNFBooks.NotFinished.UserId$': req.params.id
+            },
+            attributes: ['id', 'title', 'author', 'cover_img',],
+            order: [[sequelize.col('DNFBooks.NotFinished.createdAt'), 'DESC']],
+            include: [{
+                model: User,
+                as: 'DNFBooks',
+                attributes: ['id'],
+                through: {
+                    attributes: ['createdAt']
+                },
+            },
+            {
+                model: Shelf,
+                where: {
+                    UserId: req.params.id
+                },
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },
+                required: false
+            },]
+        })
+        return res.status(200).json(books)
+    } catch (err) {
+        console.log(err)
+        res.json(err)
+    }
+
+})
+
+// get ALL owned books -- all 'Owned' books
+router.get('/owned/:id', async (req, res) => {
+    try {
+        const books = await Book.findAll({
+            where: {
+                '$OwnedBooks.OwnedItems.UserId$': req.params.id
+            },
+            attributes: ['id', 'title', 'author', 'cover_img'],
+            order: [[sequelize.col('OwnedBooks.OwnedItems.createdAt'), 'DESC']],
+            include: [{
+                model: User,
+                as: 'OwnedBooks',
+                attributes: ['id'],
+                through: {
+                    attributes: ['createdAt']
+                },
+            },
+            {
+                model: Shelf,
+                where: {
+                    UserId: req.params.id
+                },
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },
+                required: false
+            },]
+        })
+        return res.status(200).json(books)
+    } catch (err) {
+        console.log(err)
+        res.json(err)
+    }
+
+})
+
+
+
+
 // Add book to currently reading 
 router.post('/add/currentread', async (req, res) => {
     try {
@@ -167,33 +179,7 @@ router.post('/add/currentread', async (req, res) => {
     catch (err) { console.log(err) }
 })
 
-// finished reading -- move from currently reading to read (by adding a review)
-// router.post('/finishedreading', (req, res) => {
-//     User.findByPk(req.body.UserId).then(async user => {
-//         await user.removeCurrentRead(req.body.BookId)
-//         const newReview = await Review.create({
-//             read: true,
-//             ...req.body
-//         })
-//         res.status(200).json(newReview)
-//     }).catch(err => {
-//         console.log(err)
-//         res.json(err)
-//     })
-// })
-
-// post -- move from CR to DNF
-// router.post('/moveto/dnf', (req, res) => {
-//     User.findByPk(req.body.userId).then(async user => {
-//         await user.removeCurrentRead(req.body.bookId)
-//         await user.addDNF(req.body.bookId)
-//         res.status(200).json({ message: 'removed book from currently reading to DNF list' })
-//     }).catch(err => {
-//         console.log(err)
-//         res.json(err)
-//     })
-// })
-
+// Add book to read list
 router.post('/add/read', async (req, res) => {
     try {
         const user = await User.findByPk(req.body.userId)
@@ -226,7 +212,7 @@ router.post('/add/owned', async (req, res) => {
     }
 })
 
-// Remove from currently reading entirely - not moving anywhere, just not reading it 
+// Remove from currently reading entirely - not moving anywhere, removing CR association
 router.delete('/delcurrentread/:userId/:bookId', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.userId)
@@ -238,7 +224,7 @@ router.delete('/delcurrentread/:userId/:bookId', async (req, res) => {
     }
 })
 
-// delete remove from dnf
+// delete remove from dnf - not moving anywhere, just removing DNF association 
 router.delete('/deldnf/:userId/:bookId', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.userId)
@@ -251,9 +237,8 @@ router.delete('/deldnf/:userId/:bookId', async (req, res) => {
 
 })
 
-// delete remove from owned
+// delete remove from owned -- removing Owned association 
 router.delete('/delowned/:userId/:bookId', async (req, res) => {
-    // remove from OnShelf ??? not sure -- maybe check if 
     try {
         const user = await User.findByPk(req.params.userId)
         await user.removeOwned(req.params.bookId)
@@ -280,32 +265,91 @@ router.delete('/delread/:userId/:bookId', async (req, res) => {
 
 
 
+// ALL USER BOOKS - CR, READ, OWNED, DNF, ON SHELVES 
+router.get('/shelved/:id', async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id, {
+            attributes: ['id'],
+            include: [
+                {
+                    model: Book,
+                    as: 'CurrentRead',
+                    through: {
+                        attributes: []
+                    },
+                },
+                {
+                    model: Book,
+                    as: 'Read',
+                    through: {
+                        attributes: []
+                    },
 
+                }, {
+                    model: Book,
+                    as: 'Owned',
+                    through: {
+                        attributes: []
+                    },
+                }, {
+                    model: Book,
+                    as: 'DNF',
+                    through: {
+                        attributes: []
+                    },
+                },
+                {
+                    model: Shelf,
+                    attributes: ['id'],
+                    include: [{
+                        model: Book,
+                        through: {
+                            attributes: []
+                        },
+                    }]
+                }
+            ]
+        })
+        let allBooks = [];
 
-// ---- MAYBE? ----- 
+        user.CurrentRead.map(book => { allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author}) })
 
-// get ALL users books -- get all 'shelved' books or all books OnShelf
-router.get('/shelved/:id', (req, res) => {
-    User.findByPk(req.params.id).then(async user => {
-        const books = await user.getOnShelf({ joinTableAttributes: [], raw: true })
-        return res.status(200).json(books)
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
+        user.Read.map(book => {
+            allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
+                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+        })
 
-})
+        user.Owned.map(book => {
+            allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
+                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+        })
 
+        user.DNF.map(book => {
+            allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
+                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+        })
 
+        user.Shelves.map(shelf => {
+            shelf.Books.map(book => {
+                allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
+                    allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+            })
+        })
 
-router.post('/add/onshelf', (req, res) => {
-    User.findByPk(req.body.userId).then(async user => {
-        await user.addOnShelf(req.body.bookId)
-        return res.json({ message: 'added book to shelved list!' })
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
+        const userBooks = {
+            allBooks,
+            currently: user.CurrentRead,
+            read: user.Read,
+            owned: user.Owned,
+            dnf: user.DNF,
+            shelves: user.Shelves
+        }
+
+        res.json(userBooks)
+    } catch (error) {
+        console.log(error)
+        res.json(error)
+    }
 })
 
 

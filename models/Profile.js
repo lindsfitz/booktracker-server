@@ -4,8 +4,17 @@ const sequelize = require('../config/connection');
 class Profile extends Model { }
 
 Profile.init({
+    first_name: {
+        type: DataTypes.STRING,
+        allowNull:false
+    },
     username: {
         type: DataTypes.STRING,
+    },
+    public: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     },
     about_me: {
         type: DataTypes.TEXT,

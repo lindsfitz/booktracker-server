@@ -3,9 +3,9 @@ const Shelf = require('./Shelf')
 const Book = require('./Book')
 const Tag = require('./Tag')
 const Review = require('./Review')
-const Request = require('./Request')
 const ActivityGoal = require('./ActivityGoal')
 const Profile = require('./Profile')
+const Note = require('./Note')
 
 
 User.hasOne(Profile, {
@@ -13,25 +13,23 @@ User.hasOne(Profile, {
 });
 Profile.belongsTo(User)
 
-// Shelf belongs to User
-// User has many Shelf
-    // fk user id in Shelf table
+
 
 Shelf.belongsTo(User);
 User.hasMany(Shelf, {
     onDelete: 'CASCADE'
 })
 
-// Book belongs to many Shelf
-// Shelf has many Book
-    // THROUGH: bookshelf 
+
+ActivityGoal.belongsTo(User)
+User.hasMany(ActivityGoal)
+
+
 
 Book.belongsToMany(Shelf,{through: 'bookshelf'})
 Shelf.belongsToMany(Book, {through: 'bookshelf'})
 
-// Review belongs to User
-// User has many Review
-    // fk user id in Review table
+
 
 Review.belongsTo(User)
 User.hasMany(Review, {
@@ -41,9 +39,15 @@ User.hasMany(Review, {
 Review.belongsTo(Book)
 Book.hasMany(Review)
 
+Note.belongsTo(User)
+User.hasMany(Note,{
+    onDelete:'CASCADE'
+})
+
+Note.belongsTo(Book)
+Book.hasMany(Note)
 
 
-User.belongsToMany(Book, {through:'Shelved', as: 'OnShelf'})
 
 User.belongsToMany(Book, {through:'CurrentlyReading', as: 'CurrentRead'})
 Book.belongsToMany(User, {through:'CurrentlyReading', as: 'CurrentBooks'})
@@ -64,32 +68,31 @@ Tag.belongsToMany(Profile, {through:'UserTags'})
 Book.belongsToMany(Tag, {through:'BookTag'})
 Tag.belongsToMany(Book,{through:'BookTag'})
 
+Shelf.belongsToMany(Tag, {through:'ShelfTags'})
+Tag.belongsToMany(Shelf, {through:'ShelfTags'})
 
 
 
-ActivityGoal.belongsTo(User)
-User.hasMany(ActivityGoal)
+
 
 
 
 // Friends lists functionality being added potentially 
-User.belongsToMany(User, { as: 'Sender', through: 'Friends' });
-User.belongsToMany(User, { as: 'Receiver', through: 'Friends' });
-// Request.belongsTo(User, {
-//     foreignKey:'senderId'
+User.belongsToMany(User, { as: 'Friend1', through: 'Friends' });
+User.belongsToMany(User, { as: 'Friend2', through: 'Friends' });
+
+
+User.belongsToMany(User, {as: 'Sender', through:'Requests'})
+User.belongsToMany(User, {as: 'Receiver', through:'Requests'})
+
+// Request.belongsTo(User,{
+//     foreignKey:'SenderId'
 // })
-// User.belongsToMany(User, {through: Request, as:'Sender'})
-Request.belongsTo(User,{
-    foreignKey:'SenderId'
-})
-// User.hasMany(Request)
 
-// User.belongsToMany(User, {through: {model: Request}, as:'Sent'})
-// User.belongsToMany(User, {through: {model: Request}, as:'Recieved'})
 
-Request.belongsTo(User,{
-    foreignKey:'ReceiverId'
-})
+// Request.belongsTo(User,{
+//     foreignKey:'ReceiverId'
+// })
 // User.hasMany(Request)
 
 
@@ -97,9 +100,9 @@ module.exports = {
     Tag,
     User,
     Book,
+    Note,
     Shelf,
     Review,
-    Request,
     Profile,
     ActivityGoal
 }

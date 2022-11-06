@@ -1,11 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Review, Shelf, User } = require('../../models')
+const { Book, Review, Shelf, User, Note } = require('../../models')
 const sequelize = require('../../config/connection')
 
 
 // get all route for testing 
-
 router.get('/', (req, res) => {
     Book.findAll().then(books => {
         res.json(books)
@@ -16,7 +15,7 @@ router.get('/', (req, res) => {
 })
 
 
-// one book for testing 
+// one book for testing -- literally just book info by itself (maybe use for non-logged in users?)
 router.get('/one/:id', (req, res) => {
     Book.findByPk(req.params.id)
         .then(book => { res.json(book) })
@@ -54,12 +53,6 @@ router.put('/bookcheck/:id', async (req, res) => {
         res.json(err)
     }
 
-    // Book.findByPk(req.params.id)
-    //     .then(book => { res.json(book) })
-    //     .catch(err => {
-    //         console.log(err)
-    //         res.json(err)
-    //     })
 })
 
 
@@ -83,7 +76,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -95,7 +88,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -107,7 +100,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -119,7 +112,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -127,6 +120,13 @@ router.get('/one/:bookid/:userid', (req, res) => {
         },
         {
             model: Review,
+            where: {
+                UserId: req.params.userid
+            },
+            required: false
+        },
+        {
+            model: Note,
             where: {
                 UserId: req.params.userid
             },
@@ -143,24 +143,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
         })
 })
 
-// LIST OF ALL USER BOOKS MARKED AS 'READ'
-router.get('/read/:id', (req, res) => {
-    Book.findAll({
-        where: {
-            '$Reviews.UserId$': req.params.id,
-            '$Reviews.read$': true
-        },
-        order: [[Review, 'date_finished', 'DESC']],
-        include: [{
-            model: Review,
-            attributes: ['date_started', 'date_finished', 'rating']
-        }]
-    }).then(books => res.json(books))
-        .catch(err => {
-            console.log(err)
-            res.json(err)
-        })
-})
+
 
 // post route for new books --- check to see if exists before actually adding a new one 
 router.post('/new', async (req, res) => {
@@ -190,7 +173,6 @@ router.post('/new', async (req, res) => {
 
 // add a book to an existing shelf
 // also updates the 'last updated' column in shelf -- shelves sorted on main page by the most recently updated
-
 router.post('/addto/:shelfid', async (req, res) => {
     try {
         const book = await Book.findByPk(req.body.id)
@@ -211,7 +193,6 @@ router.post('/addto/:shelfid', async (req, res) => {
 })
 
 // DELETE route to remove a book from a shelf
-
 router.delete('/remove/:shelfid/:bookid', async (req, res) => {
     try {
         const book = await Book.findByPk(req.params.bookid)
@@ -222,98 +203,5 @@ router.delete('/remove/:shelfid/:bookid', async (req, res) => {
         res.json(err)
     }
 })
-
-
-
-// -------------- NOT CURRENTLY USING 
-
-// ALL BOOKS associated w a user, on any shelf
-router.get('/user/:id', async (req, res) => {
-    Shelf.findAll({
-        where: {
-            userId: req.params.id
-        }
-    }).then(async shelves => {
-
-        const userBooks = []
-
-        for (const shelf of shelves) {
-            const books = await shelf.getBooks({ joinTableAttributes: [], raw: true })
-            for (const book of books) {
-                const index = books.findIndex(object => {
-                    return object.title === book.title
-                })
-                console.log(index)
-                if (!index) {
-                    userBooks.push(book)
-                }
-            }
-
-        }
-
-        return res.status(200).json(userBooks)
-
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
-
-
-})
-
-
-// doesnt work bc of mix in method -- can fix if decided that I do want an allbooks list 
-router.get('/allbooks/:id', async (req, res) => {
-
-    try {
-        const allUserBooks = []
-
-        const user = await User.findByPk(req.params.id, {
-            include: [
-                {
-                    model: Shelf,
-                    // attributes: [],
-                    include: [{
-                        model: Book,
-                        through: { attributes: [] }
-                    }]
-                }],
-        })
-
-        const reading = await user.getBooks({ joinTableAttributes: [], raw: true })
-
-        for (const book of reading) {
-            allUserBooks.push(book)
-        }
-
-        for (const shelf of user.Shelves) {
-            const books = await shelf.getBooks({ joinTableAttributes: [], raw: true })
-            console.log(books)
-            for (const book of books) {
-                const index = books.findIndex(object => {
-                    return object.title === book.title
-                })
-                console.log(index)
-                if (!index) {
-                    allUserBooks.push(book)
-                }
-            }
-
-        }
-
-        return res.status(200).json(allUserBooks)
-    }
-
-    catch (error) {
-        console.log(error)
-        res.json(error)
-    }
-})
-
-
-
-
-
-
 
 module.exports = router

@@ -1,40 +1,32 @@
 const sequelize = require("../config/connection");
-const { User, Book, Shelf, Review, Request, ActivityGoal, Tag, Profile } = require('../models');
+const { User, Book, Shelf, Review, ActivityGoal, Tag, Profile, Note } = require('../models');
 
 const seed = async () => {
     const userData = await User.bulkCreate([
         {
             email: "meep@meep.com",
             password: "password",
-            first_name: 'Lindsay',
         },
         {
             email: "test@test.com",
             password: "password",
-            first_name: 'Tester',
         }],
         {
             individualHooks: true
         })
 
     userData[0].createProfile({
+        first_name: 'Lindsay',
         username: "meep",
         last_login: new Date()
     })
     userData[1].createProfile({
+        first_name: 'Tester',
         username: "potato",
+        public:false,
         last_login: new Date()
     })
 
-
-
-    const requestData = await Request.bulkCreate([
-        {
-            accepted: false,
-            SenderId: 1,
-            ReceiverId: 2
-        }
-    ])
 
     const shelfData = await Shelf.bulkCreate([
         {
@@ -197,27 +189,152 @@ const seed = async () => {
             ol_key: "/books/OL37998226M",
             isbn: '9781509879656'
         },
+        {
+            title: "Verity",
+            author: "Colleen Hoover",
+            author_key: null,
+            description: "Lowen Ashleigh is a struggling writer on the brink of financial ruin when she accepts the job offer of a lifetime. Jeremy Crawford, husband of bestselling author Verity Crawford, has hired Lowen to complete the remaining books in a successful series his injured wife is unable to finish.\r\n \r\nLowen arrives at the Crawford home, ready to sort through years of Verity’s notes and outlines, hoping to find enough material to get her started. What Lowen doesn’t expect to uncover in the chaotic office is an unfinished autobiography Verity never intended for anyone to read. Page after page of bone-chilling admissions, including Verity's recollection of the night her family was forever altered.\r\n \r\nLowen decides to keep the manuscript hidden from Jeremy, knowing its contents could devastate the already grieving father. But as Lowen’s feelings for Jeremy begin to intensify, she recognizes all the ways she could benefit if he were to read his wife’s words. After all, no matter how devoted Jeremy is to his injured wife, a truth this horrifying would make it impossible for him to continue loving her.",
+            cover_img: "https://covers.openlibrary.org/b/id/12501101-M.jpg",
+            pages: 154,
+            published: "Dec 10, 2018",
+            ol_key: "/books/OL36038052M",
+            isbn: "9781804227046"
+        },
+        {
+            title: "It Ends With Us",
+            author: "Colleen Hoover",
+            author_key: null,
+            description: "Lily hasn’t always had it easy, but that’s never stopped her from working hard for the life she wants. She’s come a long way from the small town where she grew up—she graduated from college, moved to Boston, and started her own business. And when she feels a spark with a gorgeous neurosurgeon named Ryle Kincaid, everything in Lily’s life seems too good to be true.\r\n\r\nRyle is assertive, stubborn, maybe even a little arrogant. He’s also sensitive, brilliant, and has a total soft spot for Lily. And the way he looks in scrubs certainly doesn’t hurt. Lily can’t get him out of her head. But Ryle’s complete aversion to relationships is disturbing. Even as Lily finds herself becoming the exception to his “no dating” rule, she can’t help but wonder what made him that way in the first place.\r\n\r\nAs questions about her new relationship overwhelm her, so do thoughts of Atlas Corrigan—her first love and a link to the past she left behind. He was her kindred spirit, her protector. When Atlas suddenly reappears, everything Lily has built with Ryle is threatened.\r\n\r\nWith this bold and deeply personal novel, It Ends With Us is a heart-wrenching story and an unforgettable tale of love that comes at the ultimate price.",
+            cover_img: "https://covers.openlibrary.org/b/id/12916657-M.jpg",
+            "pages": 384,
+            published: "Aug 02, 2016",
+            ol_key: "/books/OL39479218M",
+            isbn: "9781501110368"
+        },
+        {
+            title: "The Seven Husbands of Evelyn Hugo",
+            author: "Taylor Jenkins Reid",
+            author_key: null,
+            description: "Aging and reclusive Hollywood movie icon Evelyn Hugo is finally ready to tell the truth about her glamorous and scandalous life. But when she chooses unknown magazine reporter Monique Grant for the job, no one is more astounded than Monique herself. Why her? Why now?\r\n\r\nMonique is not exactly on top of the world. Her husband has left her, and her professional life is going nowhere. Regardless of why Evelyn has selected her to write her biography, Monique is determined to use this opportunity to jumpstart her career.\r\n\r\nSummoned to Evelyn's luxurious apartment, Monique listens in fascination as the actress tells her story. From making her way to Los Angeles in the 1950s to her decision to leave show business in the '80s, and, of course, the seven husbands along the way, Evelyn unspools a tale of ruthless ambition, unexpected friendship, and a great forbidden love. Monique begins to feel a very real connection to the legendary star, but as Evelyn's story near its conclusion, it becomes clear that her life intersects with Monique's own in tragic and irreversible ways.\r\n\r\nWritten with Reid's signature talent for creating \"complex, likable characters\" (Real Simple), this is a mesmerizing journey through the splendor of old Hollywood into the harsh realities of the present day as two women struggle with what it means—and what it costs—to face the truth",
+            cover_img: "https://covers.openlibrary.org/b/id/8354226-M.jpg",
+            pages: 400,
+            published: "2018",
+            ol_key: "/books/OL28621809M",
+            isbn: "9781501161933"
+        },
+        {
+            title: "Ordinary Monsters",
+            author: "J. M. Miro",
+            author_key: null,
+            description: null,
+            cover_img: "https://covers.openlibrary.org/b/id/12561480-M.jpg",
+            pages: null,
+            published: "Jun 07, 2022",
+            ol_key: "/books/OL36673766M",
+            isbn: "9781250854704"
+        },
+        {
+            title: "The Hundred Thousand Kingdoms",
+            author: "N. K. Jemisin",
+            author_key: null,
+            description: "Yeine Darr is an outcast from the barbarian north.  But when her mother dies under mysterious circumstances, she is summoned to the majestic city of Sky.  There, to her shock, Yeine is named an heiress to the king.  But the throne of the Hundred Thousand Kingdoms is not easily won, and Yeine is thrust into a vicious power struggle with cousins she never knew she had.  As she fights for her life, she draws ever closer to the secrets of her mother's death and her family's bloody history.With the fate of the world hanging in the balance, Yeine will learn how perilous it can be when love and hate - and gods and mortals - are bound inseparably together.",
+            cover_img: "https://covers.openlibrary.org/b/id/7716902-M.jpg",
+            pages: 432,
+            published: "2010",
+            ol_key: "/books/OL33409950M",
+            isbn: "9780748115907"
+        },
+        {
+            title: "A Court of Silver Flames (A Court of Thorns and Roses #4)",
+            author: "Sarah J. Maas",
+            author_key: null,
+            description: null,
+            cover_img: "https://covers.openlibrary.org/b/id/10651205-M.jpg",
+            pages: 708,
+            published: "2021",
+            ol_key: "/books/OL31974187M",
+            isbn: "9781526633453"
+        },
+        {
+            title: "Foundryside",
+            author: "Robert Jackson Bennett",
+            author_key: null,
+            description: null,
+            cover_img: "https://covers.openlibrary.org/b/id/8807642-M.jpg",
+            pages: 512,
+            published: "2018",
+            ol_key: "/books/OL38383893M",
+            isbn: "9781524760373"
+        },
+        {
+            title: "Where the Crawdads Sing",
+            author: "Delia Owens",
+            author_key: null,
+            description: "For years, rumors of the “Marsh Girl” have haunted Barkley Cove, a quiet town on the North Carolina coast. So in late 1969, when handsome Chase Andrews is found dead, the locals immediately suspect Kya Clark, the so-called Marsh Girl. But Kya is not what they say. Sensitive and intelligent, she has survived for years alone in the marsh that she calls home, finding friends in the gulls and lessons in the sand. Then the time comes when she yearns to be touched and loved. When two young men from town become intrigued by her wild beauty, Kya opens herself to a new life–until the unthinkable happens.\r\n\r\nPerfect for fans of Barbara Kingsolver and Karen Russell, Where the Crawdads Sing is at once an exquisite ode to the natural world, a heartbreaking coming-of-age story, and a surprising tale of possible murder. Owens reminds us that we are forever shaped by the children we once were, and that we are all subject to the beautiful and violent secrets that nature keeps.",
+            cover_img: "https://covers.openlibrary.org/b/id/10671924-M.jpg",
+            pages: 400,
+            published: "Mar 30, 2021",
+            ol_key: "/books/OL32003396M",
+            isbn: "9780735219106"
+        },
+        {
+            title: "The Atlas Six",
+            author: "Olivie Blake",
+            author_key: null,
+            description: null,
+            cover_img: "https://covers.openlibrary.org/b/id/10862205-M.jpg",
+            pages: 383,
+            published: "Jan 30, 2020",
+            ol_key: "/books/OL32217912M",
+            isbn: "9781679910999"
+        },
+        {
+            title: "Circe",
+            author: "Madeline Miller",
+            author_key: null,
+            description: "In the house of Helios, god of the sun and mightiest of the Titans, a daughter is born. But Circe is a strange child--not powerful, like her father, nor viciously alluring like her mother. Turning to the world of mortals for companionship, she discovers that she does possess power--the power of witchcraft, which can transform rivals into monsters and menace the gods themselves.\r\n\r\nThreatened, Zeus banishes her to a deserted island, where she hones her occult craft, tames wild beasts and crosses paths with many of the most famous figures in all of mythology, including the Minotaur, Daedalus and his doomed son Icarus, the murderous Medea, and, of course, wily Odysseus.\r\n\r\nBut there is danger, too, for a woman who stands alone, and Circe unwittingly draws the wrath of both men and gods, ultimately finding herself pitted against one of the most terrifying and vengeful of the Olympians. To protect what she loves most, Circe must summon all her strength and choose, once and for all, whether she belongs with the gods she is born from, or the mortals she has come to love.\r\n\r\nWith unforgettably vivid characters, mesmerizing language and page-turning suspense, Circe is a triumph of storytelling, an intoxicating epic of family rivalry, palace intrigue, love and loss, as well as a celebration of indomitable female strength in a man's world.\r\n([source][1])\r\n\r\n\r\n  [1]: http://madelinemiller.com/circe/",
+            cover_img: "https://covers.openlibrary.org/b/id/8838757-M.jpg",
+            pages: 400,
+            published: "2018",
+            ol_key: "/books/OL27375545M",
+            isbn: "9781408890073"
+        },
+        {
+            title: "The Song of Achilles",
+            author: "Madeline Miller",
+            author_key: null,
+            description: "This is the story of the seige of Troy from the perspective of Achilles best-friend Patroclus.  Although Patroclus is outcast from his home for disappointing his father he manages to be the only mortal who can keep up with the half-God Archilles.  Even though many will know the facts behind the story the telling is fresh and engaging.",
+            cover_img: "https://covers.openlibrary.org/b/id/10710789-M.jpg",
+            pages: 382,
+            published: "2011",
+            ol_key: "/books/OL32045117M",
+            isbn: "9781408891384"
+        }
+
+
     ])
 
     const tagData = await Tag.bulkCreate([
         {
-            name:'Fiction'
+            name: 'Fiction'
         },
         {
-            name:'Romance'
+            name: 'Romance'
         },
         {
-            name:'Fantasy'
+            name: 'Fantasy'
         },
         {
-            name:'Science Fiction'
+            name: 'Science Fiction'
         },
         {
-            name:'Young Adult Fiction'
+            name: 'Young Adult Fiction'
         },
-        
+
     ])
 
+
+    await shelfData[0].addTag(3)
 
     await bookData[0].addShelf(7)
     await bookData[4].addShelf(3)
@@ -245,8 +362,7 @@ const seed = async () => {
 
     const reviewData = await Review.bulkCreate([
         {
-            read: true,
-            public: false,
+            public: true,
             date_started: "2022-09-08",
             date_finished: "2022-09-10",
             year_finished: 2022,
@@ -259,8 +375,6 @@ const seed = async () => {
             BookId: 5,
         },
         {
-            read: true,
-            public: false,
             date_started: "2022-07-22",
             date_finished: "2022-07-24",
             year_finished: 2022,
@@ -273,8 +387,6 @@ const seed = async () => {
             BookId: 1,
         },
         {
-            read: true,
-            public: false,
             date_started: "2022-08-22",
             date_finished: "2022-08-25",
             year_finished: 2022,
@@ -286,11 +398,17 @@ const seed = async () => {
             UserId: 1,
             BookId: 2,
         },
+        
+    ])
+
+
+    const noteData = await Note.bulkCreate([
         {
-            read: false,
-            public: false,
+            content:"I am loving this",
+            progress:'200/512',
+            status:'Currently Reading',
             UserId: 1,
-            BookId: 9,
+            BookId: 10,
         },
     ])
 
@@ -324,11 +442,10 @@ const seed = async () => {
         }
     ])
 
-    await userData[1].addSender(1)
+    await userData[1].addFriend1(1)
+    await userData[0].addSender(2)
 
 
-    await userData[0].addOnShelf(bookData[6])
-    await userData[0].addOnShelf(bookData[8])
     await userData[0].addDNF(bookData[2])
     await userData[0].addOwned(bookData[4])
     await userData[0].addOwned(bookData[6])

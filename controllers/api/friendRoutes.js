@@ -23,6 +23,12 @@ router.get('/:id', (req,res) => {
     })
 })
 
+// where: {
+//     [Op.or]: {
+//       senderId: userId,
+//       receiverId: userId,
+//     },
+
 // POST friends -- create new Friend; 
         // add sender to the currently logged in user
         // user(currentUserId).addSender(senderIdfromRequest)
