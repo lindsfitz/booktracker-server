@@ -3,9 +3,9 @@ const Shelf = require('./Shelf')
 const Book = require('./Book')
 const Tag = require('./Tag')
 const Review = require('./Review')
-const Request = require('./Request')
 const ActivityGoal = require('./ActivityGoal')
 const Profile = require('./Profile')
+const Note = require('./Note')
 
 
 User.hasOne(Profile, {
@@ -38,6 +38,14 @@ User.hasMany(Review, {
 
 Review.belongsTo(Book)
 Book.hasMany(Review)
+
+Note.belongsTo(User)
+User.hasMany(Note,{
+    onDelete:'CASCADE'
+})
+
+Note.belongsTo(Book)
+Book.hasMany(Note)
 
 
 
@@ -92,9 +100,9 @@ module.exports = {
     Tag,
     User,
     Book,
+    Note,
     Shelf,
     Review,
-    Request,
     Profile,
     ActivityGoal
 }

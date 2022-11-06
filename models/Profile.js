@@ -4,6 +4,10 @@ const sequelize = require('../config/connection');
 class Profile extends Model { }
 
 Profile.init({
+    first_name: {
+        type: DataTypes.STRING,
+        allowNull:false
+    },
     username: {
         type: DataTypes.STRING,
     },

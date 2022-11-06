@@ -10,11 +10,13 @@ const activityRoutes = require('./activityRoutes')
 const nytRoutes = require('./nytRoutes')
 const userBookRoutes = require('./userBookRoutes')
 const tagRoutes = require('./tagRoutes')
+const noteRoutes = require('./noteRoutes')
 
 
 router.use("/user",userRoutes)
 router.use("/book",bookRoutes)
 router.use("/review",reviewRoutes)
+router.use('/note', noteRoutes)
 router.use("/shelf",shelfRoutes)
 router.use("/friend",friendRoutes)
 router.use('/stats',statRoutes)

@@ -4,13 +4,10 @@ const sequelize = require('../config/connection');
 class Review extends Model { }
 
 Review.init({
-    read: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
     public:{
         type: DataTypes.BOOLEAN,
         allowNull:false,
+        defaultValue: false,
     },
     date_started: {
         type: DataTypes.DATEONLY,   

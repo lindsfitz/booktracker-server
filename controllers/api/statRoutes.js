@@ -10,7 +10,8 @@ router.get('/all/:id/:year/:month', async (req, res) => {
         const allRead = await Book.findAll({
             where: {
                 '$Reviews.UserId$': req.params.id,
-                '$Reviews.read$': true
+                // remove this line if note/review models split
+                // '$Reviews.read$': true
             },
             attributes: [[sequelize.fn('count', sequelize.col('Book.id')), 'bookCount'], [sequelize.fn("sum", sequelize.col("pages")), 'totalPages'], [sequelize.fn('avg', sequelize.col('Reviews.rating')), 'avgRating']],
             include: [{
@@ -38,7 +39,8 @@ router.get('/all/:id/:year/:month', async (req, res) => {
         const yearly = await Book.findAll({
             where: {
                 '$Reviews.UserId$': req.params.id,
-                '$Reviews.read$': true,
+                // remove this line if note/review models split
+                // '$Reviews.read$': true,
                 '$Reviews.year_finished$': req.params.year
             },
             attributes: [[sequelize.fn('count', sequelize.col('Book.id')), 'bookCount'], [sequelize.fn("sum", sequelize.col("pages")), 'totalPages'], [sequelize.fn('avg', sequelize.col('Reviews.rating')), 'avgRating']],
@@ -53,7 +55,8 @@ router.get('/all/:id/:year/:month', async (req, res) => {
         const monthly = await Book.findAll({
             where: {
                 '$Reviews.UserId$': req.params.id,
-                '$Reviews.read$': true,
+                // remove this line if note/review models split
+                // '$Reviews.read$': true,
                 '$Reviews.month_finished$': req.params.month,
                 '$Reviews.year_finished$': req.params.year
             },
@@ -92,9 +95,11 @@ router.get('/monthly/:month/:id', async (req, res) => {
             where: {
                 '$Reviews.month_finished$': req.params.month,
                 '$Reviews.year_finished$': thisyear,
-                '$Reviews.read$': true,
+                // remove this line if note/review models split
+                // '$Reviews.read$': true,
                 '$Reviews.UserId$': req.params.id,
             },
+            order: [[Review, 'date_finished', 'DESC']],
             include: [{
                 model: Review,
                 attributes: ['rating', 'date_started', 'date_finished']
@@ -116,9 +121,11 @@ router.get('/yearly/:year/:id', (req, res) => {
     Book.findAll({
         where: {
             '$Reviews.UserId$': req.params.id,
-            '$Reviews.read$': true,
+            // remove this line if note/review models split
+            // '$Reviews.read$': true,
             '$Reviews.year_finished$': req.params.year
         },
+        order: [[Review, 'date_finished', 'DESC']],
         include: [{
             model: Review,
             attributes: ['rating', 'date_started', 'date_finished']

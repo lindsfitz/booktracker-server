@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Review, Shelf, User } = require('../../models')
+const { Book, Review, Shelf, User, Note } = require('../../models')
 const sequelize = require('../../config/connection')
 
 
@@ -76,7 +76,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -88,7 +88,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -100,7 +100,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -112,7 +112,7 @@ router.get('/one/:bookid/:userid', (req, res) => {
             where: {
                 id: req.params.userid
             },
-            attributes: ['first_name'],
+            attributes: ['id'],
             through: {
                 attributes: []
             },
@@ -120,6 +120,13 @@ router.get('/one/:bookid/:userid', (req, res) => {
         },
         {
             model: Review,
+            where: {
+                UserId: req.params.userid
+            },
+            required: false
+        },
+        {
+            model: Note,
             where: {
                 UserId: req.params.userid
             },
@@ -196,28 +203,5 @@ router.delete('/remove/:shelfid/:bookid', async (req, res) => {
         res.json(err)
     }
 })
-
-
-
-// LIST OF ALL USER BOOKS MARKED AS 'READ' VIA A REVIEW !! different from all books marked read
-        // NOT USING ON FRONT END ANYWHERE 
-// router.get('/read/:id', (req, res) => {
-//     Book.findAll({
-//         where: {
-//             '$Reviews.UserId$': req.params.id,
-//             '$Reviews.read$': true
-//         },
-//         order: [[Review, 'date_finished', 'DESC']],
-//         include: [{
-//             model: Review,
-//             attributes: ['date_started', 'date_finished', 'rating']
-//         }]
-//     }).then(books => res.json(books))
-//         .catch(err => {
-//             console.log(err)
-//             res.json(err)
-//         })
-// })
-
 
 module.exports = router

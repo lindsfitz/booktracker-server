@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Review, Shelf, User } = require('../../models')
+const { Book, Review, Shelf, User, Note } = require('../../models')
 const sequelize = require('../../config/connection')
 
 // Get all currently reading
@@ -30,7 +30,17 @@ router.get('/currentreads/:id', async (req, res) => {
                     attributes: []
                 },
                 required: false
-            },]
+            },
+            {
+                model: Note,
+                where: {
+                    UserId: req.params.id
+                },
+                order: [['createdAt', 'DESC']],
+                limit:1,
+                required: false
+            }
+        ]
         })
         return res.status(200).json(books)
     } catch (err) {
@@ -302,31 +312,40 @@ router.get('/shelved/:id', async (req, res) => {
         })
         let allBooks = [];
 
-        user.CurrentRead.map(book => { allBooks.push(book) })
+        user.CurrentRead.map(book => { allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author}) })
 
         user.Read.map(book => {
             allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                allBooks.push(book)
+                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
         })
 
         user.Owned.map(book => {
             allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                allBooks.push(book)
+                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
         })
 
         user.DNF.map(book => {
             allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                allBooks.push(book)
+                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
         })
 
         user.Shelves.map(shelf => {
             shelf.Books.map(book => {
                 allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                    allBooks.push(book)
+                    allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
             })
         })
 
-        res.json(allBooks)
+        const userBooks = {
+            allBooks,
+            currently: user.CurrentRead,
+            read: user.Read,
+            owned: user.Owned,
+            dnf: user.DNF,
+            shelves: user.Shelves
+        }
+
+        res.json(userBooks)
     } catch (error) {
         console.log(error)
         res.json(error)

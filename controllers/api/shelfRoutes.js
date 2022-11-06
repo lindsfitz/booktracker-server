@@ -45,7 +45,7 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
@@ -57,7 +57,7 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
@@ -69,7 +69,7 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
@@ -81,22 +81,13 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                         where: {
                             id: req.params.userid
                         },
-                        attributes: ['first_name'],
+                        attributes: ['id'],
                         through: {
                             attributes: []
                         },
                         required: false
                     },
-                    {
-                        model: Review,
-                        where: {
-                            UserId: req.params.userid,
-                            read:true
-                        },
-                        attributes:['read'],
-                        required: false
-                    },
-
+                   
                 ]
             }]
         })

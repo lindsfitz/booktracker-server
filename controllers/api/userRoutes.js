@@ -31,12 +31,13 @@ router.post("/signup", (req, res) => {
     User.create({
         email: req.body.email,
         password: req.body.password,
-        first_name: req.body.first_name,
-        last_login: new Date()
     }).then(async (newUser) => {
         try {
             await Profile.create({
+                first_name: req.body.first_name,
+                display_name: req.body.first_name,
                 username: req.body.username,
+                last_login: new Date(),
                 UserId: newUser.id
             })
             await Shelf.create({
@@ -61,7 +62,7 @@ router.post("/login", (req, res) => {
         where: {
             email: req.body.email
         }
-    }).then(foundUser => {
+    }).then(async foundUser => {
         if (!foundUser) {
             res.status(401).json({ message: "Incorrect Credentials" })
         } else {
@@ -73,17 +74,17 @@ router.post("/login", (req, res) => {
                     expiresIn: "2h"
                 })
 
-                Profile.update({
+                const profile = await foundUser.getProfile()
+
+                profile.update({
                     last_login: new Date()
-                }, {
-                    where: {
-                        UserId: foundUser.id
-                    }
                 })
+
 
                 res.json({
                     token: token,
-                    user: foundUser
+                    user: foundUser,
+                    profile: profile
                 })
             } else {
 
@@ -100,7 +101,7 @@ router.post("/login", (req, res) => {
 router.put('/update/account', (req, res) => {
     User.findOne({
         where: {
-            email: req.body.email
+            id: req.body.id
         }
     }).then(foundUser => {
         if (!foundUser) {
@@ -147,8 +148,14 @@ router.delete('/delete/:id', (req, res) => {
 })
 
 router.get("/verify", tokenAuth, (req, res) => {
-    User.findByPk(req.user.id).then(foundUser => {
-        res.json(foundUser)
+    User.findByPk(req.user.id).then(async foundUser => {
+        const profile = await foundUser.getProfile()
+        const user = {
+            id: foundUser.id,
+            user_name: profile.display_name,
+            created: foundUser.createdAt
+        }
+        res.json(user)
     }).catch(err => {
         console.log(err)
         res.json({ err: err, message: "InvalidToken" })

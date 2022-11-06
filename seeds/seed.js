@@ -1,27 +1,27 @@
 const sequelize = require("../config/connection");
-const { User, Book, Shelf, Review, Request, ActivityGoal, Tag, Profile } = require('../models');
+const { User, Book, Shelf, Review, ActivityGoal, Tag, Profile, Note } = require('../models');
 
 const seed = async () => {
     const userData = await User.bulkCreate([
         {
             email: "meep@meep.com",
             password: "password",
-            first_name: 'Lindsay',
         },
         {
             email: "test@test.com",
             password: "password",
-            first_name: 'Tester',
         }],
         {
             individualHooks: true
         })
 
     userData[0].createProfile({
+        first_name: 'Lindsay',
         username: "meep",
         last_login: new Date()
     })
     userData[1].createProfile({
+        first_name: 'Tester',
         username: "potato",
         public:false,
         last_login: new Date()
@@ -362,8 +362,7 @@ const seed = async () => {
 
     const reviewData = await Review.bulkCreate([
         {
-            read: true,
-            public: false,
+            public: true,
             date_started: "2022-09-08",
             date_finished: "2022-09-10",
             year_finished: 2022,
@@ -376,8 +375,6 @@ const seed = async () => {
             BookId: 5,
         },
         {
-            read: true,
-            public: false,
             date_started: "2022-07-22",
             date_finished: "2022-07-24",
             year_finished: 2022,
@@ -390,8 +387,6 @@ const seed = async () => {
             BookId: 1,
         },
         {
-            read: true,
-            public: false,
             date_started: "2022-08-22",
             date_finished: "2022-08-25",
             year_finished: 2022,
@@ -403,11 +398,17 @@ const seed = async () => {
             UserId: 1,
             BookId: 2,
         },
+        
+    ])
+
+
+    const noteData = await Note.bulkCreate([
         {
-            read: false,
-            public: false,
+            content:"I am loving this",
+            progress:'200/512',
+            status:'Currently Reading',
             UserId: 1,
-            BookId: 9,
+            BookId: 10,
         },
     ])
 
@@ -445,8 +446,6 @@ const seed = async () => {
     await userData[0].addSender(2)
 
 
-    await userData[0].addOnShelf(bookData[6])
-    await userData[0].addOnShelf(bookData[8])
     await userData[0].addDNF(bookData[2])
     await userData[0].addOwned(bookData[4])
     await userData[0].addOwned(bookData[6])
