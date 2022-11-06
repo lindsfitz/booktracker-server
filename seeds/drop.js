@@ -3,7 +3,13 @@ const { User, Book, Shelf, Review, ActivityGoal, Tag, Profile, Note } = require(
 
 
 
-const dropTables = async () => { await sequelize.drop() }
+const dropTables = async () => { 
+    
+    sequelize.query("SET FOREIGN_KEY_CHECKS = 0")
+    await sequelize.drop() 
+    sequelize.query("SET FOREIGN_KEY_CHECKS = 1")
+
+}
 
 
 dropTables()

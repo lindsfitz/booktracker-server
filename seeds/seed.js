@@ -457,6 +457,12 @@ const seed = async () => {
 
 }
 
-sequelize.sync({ force: true }).then(() => {
-    seed();
+sequelize.query("SET FOREIGN_KEY_CHECKS = 0").then(()=> {
+    sequelize.sync({ force: true }).
+    then(() => {
+        seed().then(()=> {
+            db.query('SET FOREIGN_KEY_CHECKS = 1')
+        })
+    })
+
 })
