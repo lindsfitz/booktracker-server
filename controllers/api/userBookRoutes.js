@@ -37,10 +37,10 @@ router.get('/currentreads/:id', async (req, res) => {
                     UserId: req.params.id
                 },
                 order: [['createdAt', 'DESC']],
-                limit:1,
+                limit: 1,
                 required: false
             }
-        ]
+            ]
         })
         return res.status(200).json(books)
     } catch (err) {
@@ -274,6 +274,12 @@ router.get('/shelved/:id', async (req, res) => {
                 {
                     model: Book,
                     as: 'CurrentRead',
+                    include: [{
+                        model: Note,
+                        order: [['createdAt', 'DESC']],
+                        limit: 1,
+                        required: false
+                    }],
                     through: {
                         attributes: []
                     },
@@ -300,7 +306,7 @@ router.get('/shelved/:id', async (req, res) => {
                 },
                 {
                     model: Shelf,
-                    attributes: ['id'],
+                    attributes: ['id','name'],
                     include: [{
                         model: Book,
                         through: {
@@ -312,27 +318,27 @@ router.get('/shelved/:id', async (req, res) => {
         })
         let allBooks = [];
 
-        user.CurrentRead.map(book => { allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author}) })
+        user.CurrentRead.map(book => { allBooks.push({ id: book.id, title: book.title, cover: book.cover_img, author: book.author }) })
 
         user.Read.map(book => {
             allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+                allBooks.push({ id: book.id, title: book.title, cover: book.cover_img, author: book.author })
         })
 
         user.Owned.map(book => {
             allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+                allBooks.push({ id: book.id, title: book.title, cover: book.cover_img, author: book.author })
         })
 
         user.DNF.map(book => {
             allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+                allBooks.push({ id: book.id, title: book.title, cover: book.cover_img, author: book.author })
         })
 
         user.Shelves.map(shelf => {
             shelf.Books.map(book => {
                 allBooks.some(existing => existing.id === book.id) ? console.log('book exists') :
-                    allBooks.push({id: book.id, title: book.title, cover: book.cover_img, author:book.author})
+                    allBooks.push({ id: book.id, title: book.title, cover: book.cover_img, author: book.author })
             })
         })
 

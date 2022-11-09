@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Shelf, Book, User, Review } = require('../../models')
+const { Shelf, Book, User, Tag } = require('../../models')
 
 
  /* get all shelves by one user based on user id -- currently being used on front end when new shelf is added to pull all shelves & update context */
@@ -12,6 +12,8 @@ router.get('/all/:id', (req, res) => {
         order: [['updatedAt', 'DESC']],
         include: [{
             model: Book
+        }, {
+            model:Tag
         }]
     })
         .then(shelves => res.json(shelves))
@@ -89,6 +91,12 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
                     },
                    
                 ]
+            },{
+                model:Tag,
+                attributes:['id','name'],
+                through: {
+                    attributes: []
+                }
             }]
         })
         .then(shelf => res.json(shelf))
