@@ -1,20 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const { Shelf, Book, User, Tag } = require('../../models')
+const sequelize = require('../../config/connection')
 
 
- /* get all shelves by one user based on user id -- currently being used on front end when new shelf is added to pull all shelves & update context */
+/* get all shelves by one user based on user id -- currently being used on front end when new shelf is added to pull all shelves & update context */
 router.get('/all/:id', (req, res) => {
     Shelf.findAll({
         where: {
             userId: req.params.id
         },
-        order: [['updatedAt', 'DESC']],
-        include: [{
-            model: Book
-        }, {
-            model:Tag
-        }]
+        order: [['updatedAt', 'DESC'], [sequelize.col('Books.bookshelf.createdAt'), 'DESC']],
+        include: [Book, Tag]
     })
         .then(shelves => res.json(shelves))
         .catch(err => {
@@ -28,76 +25,80 @@ router.get('/all/:id', (req, res) => {
 router.get('/userone/:shelfid/:userid', (req, res) => {
     Shelf.findByPk(req.params.shelfid
         , {
-            include: 
-            [{
-                model: Book,
-                attributes: ['id','title','author','author_key','cover_img'],
-                include: [
-                    {
-                        model: Shelf,
-                        where: {
-                            UserId: req.params.userid
+            order: [[sequelize.col('Books.bookshelf.createdAt'), 'DESC']],
+            include:
+                [{
+                    model: Book,
+                    attributes: ['id', 'title', 'author', 'author_key', 'cover_img'],
+                    include: [
+                        {
+                            model: Shelf,
+                            where: {
+                                UserId: req.params.userid
+                            },
+                            attributes: ['name'],
+                            required: false,
+                            through: {
+                                attributes:['createdAt']
+                            }
                         },
-                        attributes:['name'],
-                        required: false
-                    },
-                    {
-                        model: User,
-                        as: 'CurrentBooks',
-                        where: {
-                            id: req.params.userid
+                        {
+                            model: User,
+                            as: 'CurrentBooks',
+                            where: {
+                                id: req.params.userid
+                            },
+                            attributes: ['id'],
+                            through: {
+                                attributes: []
+                            },
+                            required: false
                         },
-                        attributes: ['id'],
-                        through: {
-                            attributes: []
+                        {
+                            model: User,
+                            as: 'OwnedBooks',
+                            where: {
+                                id: req.params.userid
+                            },
+                            attributes: ['id'],
+                            through: {
+                                attributes: []
+                            },
+                            required: false
                         },
-                        required: false
-                    },
-                    {
-                        model: User,
-                        as: 'OwnedBooks',
-                        where: {
-                            id: req.params.userid
+                        {
+                            model: User,
+                            as: 'DNFBooks',
+                            where: {
+                                id: req.params.userid
+                            },
+                            attributes: ['id'],
+                            through: {
+                                attributes: []
+                            },
+                            required: false
                         },
-                        attributes: ['id'],
-                        through: {
-                            attributes: []
+                        {
+                            model: User,
+                            as: 'ReadBooks',
+                            where: {
+                                id: req.params.userid
+                            },
+                            attributes: ['id'],
+                            through: {
+                                attributes: []
+                            },
+                            required: false
                         },
-                        required: false
-                    },
-                    {
-                        model: User,
-                        as: 'DNFBooks',
-                        where: {
-                            id: req.params.userid
-                        },
-                        attributes: ['id'],
-                        through: {
-                            attributes: []
-                        },
-                        required: false
-                    },
-                    {
-                        model: User,
-                        as: 'ReadBooks',
-                        where: {
-                            id: req.params.userid
-                        },
-                        attributes: ['id'],
-                        through: {
-                            attributes: []
-                        },
-                        required: false
-                    },
-                   
-                ]
-            },{
-                model:Tag,
-                attributes:['id','name'],
-                through: {
-                    attributes: []
-                }
-            }]
+
+                    ]
+                }, {
+                    model: Tag,
+                    attributes: ['id', 'name'],
+                    through: {
+                        attributes: []
+                    }
+                }]
         })
         .then(shelf => res.json(shelf))
         .catch(err => {
@@ -140,7 +141,7 @@ router.put('/update/:id', (req, res) => {
 })
 
 
-/* Deletes existing shelf by id */ 
+/* Deletes existing shelf by id */
 router.delete('/delete/:id', (req, res) => {
     Shelf.destroy({
         where: {

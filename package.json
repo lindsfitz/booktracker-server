@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "seed": "node seeds/seed.js",
-    "drop":"node seeds/drop.js"
+    "drop": "node seeds/drop.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
+    "cloudinary": "^1.32.0",
     "connect-session-sequelize": "^7.1.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
