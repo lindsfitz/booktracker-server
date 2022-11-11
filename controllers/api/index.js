@@ -11,6 +11,7 @@ const nytRoutes = require('./nytRoutes')
 const userBookRoutes = require('./userBookRoutes')
 const tagRoutes = require('./tagRoutes')
 const noteRoutes = require('./noteRoutes')
+const cloudRoutes = require('./cloudRoutes')
 
 
 router.use("/user",userRoutes)
@@ -24,5 +25,6 @@ router.use('/activity', activityRoutes)
 router.use('/nyt', nytRoutes)
 router.use('/userbooks', userBookRoutes)
 router.use('/tags', tagRoutes)
+router.use('/cloud', cloudRoutes)
 
 module.exports = router;

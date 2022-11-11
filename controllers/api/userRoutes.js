@@ -32,6 +32,21 @@ router.get("/profile/:id", (req, res) => {
     })
 })
 
+router.get("/search/:username", async (req,res) => {
+    try {
+        const profile = await Profile.findAll({
+            where: {
+                username: req.params.username
+            }
+        })
+
+        res.json(profile)
+    } catch (error) {
+        console.log(error);
+        res.json(error)
+    }
+})
+
 // post route for new users 
 router.post("/signup", (req, res) => {
     User.create({
@@ -39,7 +54,7 @@ router.post("/signup", (req, res) => {
         password: req.body.password,
     }).then(async (newUser) => {
         try {
-            await Profile.create({
+            const profile = await Profile.create({
                 first_name: req.body.first_name,
                 display_name: req.body.first_name,
                 username: req.body.username,
@@ -51,7 +66,10 @@ router.post("/signup", (req, res) => {
                 last_update: new Date(),
                 UserId: newUser.id
             })
-            res.json(newUser)
+            res.json({
+                user:newUser,
+                profile:profile
+            })
         }
         catch (err) { console.log(err) }
     })
@@ -80,7 +98,9 @@ router.post("/login", (req, res) => {
                     expiresIn: "2h"
                 })
 
-                const profile = await foundUser.getProfile()
+                const profile = await foundUser.getProfile({
+                    include: [Tag]
+                })
 
                 profile.update({
                     last_login: new Date()
@@ -159,6 +179,7 @@ router.get("/verify", tokenAuth, (req, res) => {
         const user = {
             id: foundUser.id,
             user_name: profile.display_name,
+            image: profile.profile_picture,
             created: foundUser.createdAt
         }
         res.json(user)

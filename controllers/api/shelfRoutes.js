@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Shelf, Book, User, Tag } = require('../../models')
+const { Shelf, Book, User, Tag, Profile } = require('../../models')
 const sequelize = require('../../config/connection')
 
 
@@ -107,6 +107,41 @@ router.get('/userone/:shelfid/:userid', (req, res) => {
         })
 })
 
+router.get('/search/:username', async (req,res) => {
+    try {
+        const profile = await Profile.findOne({
+            where: {
+                username: req.params.username
+            },
+            attributes:[],
+            order: [[User, Shelf, 'updatedAt', 'DESC']],
+            include: [
+                {
+                    model: User,
+                    attributes: ['id'],
+                    include: [{
+                        model: Shelf,
+                        where: {
+                            public: true
+                        },
+                        attributes:['id','name','updatedAt'],
+                        include: [{
+                            model:Tag,
+                            attributes:['id', 'name'],
+                            through:{
+                                attributes:[]
+                            }
+                        }]
+                    }]
+                }
+            ]
+        })
+        res.json(profile)
+    } catch (error) {
+       console.log(error)
+       res.json(error) 
+    }
+})
 
 /* Adds new shelf */
 router.post('/new', (req, res) => {
