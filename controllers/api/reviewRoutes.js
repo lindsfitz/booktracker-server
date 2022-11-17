@@ -1,22 +1,59 @@
 const express = require('express')
 const router = express.Router()
-const { Book, Shelf, Review, User } = require('../../models')
+const { Book, Shelf, Review, User, Profile } = require('../../models')
+const sequelize = require('../../config/connection')
+
 
 
 // get route for all PUBLIC reviews based on book id
-router.get('/book/:id', (req, res) => {
-    Review.findAll({
-        where: {
-            BookId: req.params.id,
-            public:true
+
+router.get('/public/:id', async (req, res) => {
+    try {
+        const book = await Book.findByPk(req.params.id);
+
+        const avgRating = await book.getReviews({
+            where: {
+                public: true
+            },
+            attributes: [[sequelize.fn('avg', sequelize.col('rating')), 'avgRating'], [sequelize.fn('count', sequelize.col('id')), 'count']],
+        })
+
+        const reviews = await book.getReviews({
+            where: {
+                public: true
+            },
+            attributes: [
+                'id', 'public', 'date_started', 'date_finished', 'rating', 'review', 'createdAt', 'BookId', [sequelize.col('User.Profile.id'), 'ProfileId'],[sequelize.col('User.Profile.display_name'), 'ProfileName']
+            ],
+            include: [
+                {
+                    model: User,
+                    attributes: [],
+                    include: {
+                        model: Profile,
+                        attributes: []
+                    }
+                }
+            ]
+        })
+
+        if (!reviews.length) {
+            return res.json(null)
         }
-    }).then(reviews => {
-        res.json(reviews)
-    }).catch(err => {
-        console.log(err)
-        res.json(err)
-    })
+
+        res.json({
+            title: book.title,
+            avg: avgRating[0], reviews
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.json(error)
+    }
 })
+
+
+
 
 // all users reviews on one specific book 
 router.get('/:uid/:bid', (req, res) => {
