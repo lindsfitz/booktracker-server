@@ -10,8 +10,6 @@ router.get('/all/:id/:year/:month', async (req, res) => {
         const allRead = await Book.findAll({
             where: {
                 '$Reviews.UserId$': req.params.id,
-                // remove this line if note/review models split
-                // '$Reviews.read$': true
             },
             attributes: [[sequelize.fn('count', sequelize.col('Book.id')), 'bookCount'], [sequelize.fn("sum", sequelize.col("pages")), 'totalPages'], [sequelize.fn('avg', sequelize.col('Reviews.rating')), 'avgRating']],
             include: [{

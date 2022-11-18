@@ -204,4 +204,18 @@ router.delete('/remove/:shelfid/:bookid', async (req, res) => {
     }
 })
 
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const book = await Book.destroy({
+            where: { id: req.params.id }
+        })
+        res.json(book)
+    }
+    catch (err) {
+        console.log(err)
+        res.json(err)
+    }
+});
+
+
 module.exports = router
