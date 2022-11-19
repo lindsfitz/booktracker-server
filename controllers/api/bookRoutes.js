@@ -171,6 +171,20 @@ router.post('/new', async (req, res) => {
 
 })
 
+router.put('/update/:id', async (req, res) => {
+    try {
+        const book = await Book.update(...req.body, {
+            where: { id: req.params.id }
+        })
+        res.json(book)
+    }
+    catch (err) {
+        console.log(err)
+        res.json(err)
+    }
+});
+
+
 // add a book to an existing shelf
 // also updates the 'last updated' column in shelf -- shelves sorted on main page by the most recently updated
 router.post('/addto/:shelfid', async (req, res) => {
